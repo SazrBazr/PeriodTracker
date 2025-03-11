@@ -1,0 +1,479 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+#prediction-circle {
+    text-align: center;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ff6b6b;
+    color: white;
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#prediction-circle h3 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+#days-until-period {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+#prediction-circle p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+#prediction-circle {
+    animation: pulse 2s infinite;
+}
+
+input[type=radio] {
+    visibility: hidden;
+}
+
+label.radio {
+    cursor: pointer;
+    text-indent: 35px;
+    overflow: visible;
+    display: inline-block;
+    position: relative;
+    margin-bottom: 15px;
+}
+
+label.radio:before {
+    background: #3a57af;
+    content:'';
+    position: absolute;
+    top:2px;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+}
+
+label.radio:after {
+	opacity: 0;
+	content: '';
+	position: absolute;
+	width: 0.5em;
+	height: 0.25em;
+	background: transparent;
+	top: 7.5px;
+	left: 4.5px;
+	border: 3px solid #ffffff;
+	border-top: none;
+	border-right: none;
+
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+}
+
+input[type=radio]:checked + label:after {
+	opacity: 1;
+}
+
+.gender {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+
+#app {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Auth Container */
+#auth-container {
+    padding: 20px;
+    text-align: center;
+}
+
+#auth-container h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+#auth-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#auth-container button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff6b6b;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#auth-container button:hover {
+    background-color: #ff4c4c;
+}
+
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+/* Dashboard */
+#dashboard {
+    display: none;
+    padding: 20px;
+}
+
+#app {
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Auth Container */
+#auth-container {
+    padding: 20px;
+    text-align: center;
+}
+
+#auth-container h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+#auth-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#auth-container button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff6b6b;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#auth-container button:hover {
+    background-color: #ff4c4c;
+}
+
+/* Dashboard */
+#dashboard {
+    display: none;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+header h2 {
+    font-size: 1.5rem;
+}
+
+#logout-btn {
+    padding: 5px 10px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#logout-btn:hover {
+    background-color: #ff4c4c;
+}
+
+/* Female-only content */
+.female-only {
+    display: none;
+}
+
+body.female .female-only {
+    display: block;
+}
+
+body.male .female-only {
+    display: none !important;
+}
+
+/* Input Groups */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.symptoms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.symptoms label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#save-period-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#save-period-btn:hover {
+    background-color: #ff4c4c;
+}
+
+/* Cycle History */
+#cycle-history,
+#invitations-list {
+    list-style-type: none;
+}
+
+#cycle-history li,
+#invitations-list li {
+    background: #f7f7f7;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+/* Loading Indicator */
+#loading {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2rem;
+    color: #ff6b6b;
+}
+
+.cycle-analysis, .symptom-tracking, .nutrition-tips {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f7f7f7;
+    border-radius: 5px;
+}
+
+#cycle-stats p, #tips-list li, #nutrition-tips-content {
+    margin: 10px 0;
+}
+
+#save-symptoms-btn {
+    padding: 10px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#save-symptoms-btn:hover {
+    background-color: #ff4c4c;
+}
+
+.stats-tab {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.stat h4 {
+    margin: 0 0 10px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.stat p {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff6b6b;
+}
+
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-cell {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.calendar-cell.empty {
+    background-color: #f7f7f7;
+    border: none;
+}
+
+.calendar-cell:hover {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.tracking-tab {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#day-details {
+    margin-top: 20px;
+}
+
+/* Menu Bar */
+#menu-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#menu-bar button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+    color: #333;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#menu-bar button.active {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+#menu-bar button:hover {
+    background-color: #ff4c4c;
+    color: white;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.calendar-cell.active {
+    background-color: #ff0000; /* Red background for active date */
+    color: #fff; /* White text for active date */
+}
+
+.calendar-cell.disabled {
+    color: #ccc; /* Gray out future dates */
+    pointer-events: none; /* Disable clicking */
+}

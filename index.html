@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Period Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- Auth Container -->
+    <div id="auth-container">
+      <h1>🌺 Period Tracker</h1>
+
+      <!-- Login Form -->
+      <div id="login-form">
+        <h2>Login</h2>
+        <input type="email" id="login-email" placeholder="Email">
+        <div class="password-container">
+          <input type="password" id="login-password" placeholder="Password">
+          <span class="toggle-password" onclick="togglePassword('login-password')">👁️</span>
+        </div>
+        <button id="login-btn">Login</button>
+        <p>Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+      </div>
+
+      <!-- Signup Form -->
+      <div id="signup-form" style="display: none;">
+        <h2>Sign Up</h2>
+        <input type="email" id="signup-email" placeholder="Email">
+        <input type="text" id="signup-username" placeholder="Username">
+        <div class="gender">
+          <input type="radio" value="Female" id="female" name="gender" checked/>
+          <label for="female" class="radio">Female</label>
+          <input type="radio" value="Male" id="male" name="gender"/>
+          <label for="male" class="radio">Male</label>
+        </div> 
+        <div class="password-container">
+          <input type="password" id="signup-password" placeholder="Password">
+          <span class="toggle-password" onclick="togglePassword('signup-password')">👁️</span>
+        </div>
+        <div class="password-container">
+          <input type="password" id="signup-confirm-password" placeholder="Confirm Password">
+          <span class="toggle-password" onclick="togglePassword('signup-confirm-password')">👁️</span>
+        </div>
+        <button id="signup-btn">Sign Up</button>
+        <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" style="display: none;">
+      <header>
+        <h2>Welcome, <span id="username"></span>!</h2>
+        <nav id="menu-bar">
+          <button id="dashboard-tab-btn" class="active">Dashboard</button>
+          <button id="tracking-tab-btn">Tracking</button>
+          <button id="stats-tab-btn">Stats</button>
+          <button id="logout-btn">Logout</button>
+        </nav>
+      </header>
+
+      <!-- Wrap the existing sections in tab containers -->
+      <div id="dashboard-tab" class="tab-content active">
+        <!-- Prediction Circle -->
+        <div id="prediction-circle">
+          <h3>Your Period is in</h3>
+          <div id="days-until-period">?</div>
+          <p>days</p>
+        </div>
+        <div class="female-only">
+          <h3>Nutrition Tips</h3>
+          <section class="nutrition-tips">
+            <div id="nutrition-tips-content">
+                <p>No enough data</p>
+            </div>  
+          </section>
+        </div>
+
+        <!-- Shared content for both genders -->
+        <section id="invitations-section" class="sharing" style="display: none;">
+          <h3>Invitations</h3>
+          <ul id="invitations-list"></ul>
+        </section>
+
+        <section class="history">
+          <h3>Cycle History</h3>
+          <ul id="cycle-history"></ul>
+        </section>
+      </div>
+      
+      <div id="tracking-tab" class="tab-content">
+        <h3>Tracking</h3>
+        <div id="calendar"></div>
+        <div id="day-details" style="display: none;">
+            <h4 id="selected-date"></h4>
+            <div class="symptoms">
+                <label><input type="checkbox" name="symptoms" value="cramps"> Cramps</label>
+                <label><input type="checkbox" name="symptoms" value="headache"> Headache</label>
+                <label><input type="checkbox" name="symptoms" value="mood-swings"> Mood Swings</label>
+                <label><input type="checkbox" name="symptoms" value="bloating"> Bloating</label>
+                <label><input type="checkbox" name="symptoms" value="fatigue"> Fatigue</label>
+            </div>
+            <label for="flow">Flow</label>
+            <select id="flow">
+                <option value="light">Light</option>
+                <option value="medium">Medium</option>
+                <option value="heavy">Heavy</option>
+            </select>
+            <button id="save-day-btn">Save</button>
+            <button id="start-period-btn">Start Period</button>
+            <button id="end-period-btn" style="display: none;">End Period</button>
+        </div>
+      </div>
+
+      <div id="stats-tab" class="tab-content">
+        <h3>Stats</h3>
+        <div class="stats-grid">
+            <div class="stat">
+                <h4>Average Cycle Length</h4>
+                <p id="avg-cycle-length-stat">No data</p>
+            </div>
+            <div class="stat">
+                <h4>Average Period Length</h4>
+                <p id="avg-period-length-stat">No data</p>
+            </div>
+            <div class="stat">
+                <h4>Ovulation Window</h4>
+                <p id="ovulation-window-stat">No data</p>
+            </div>
+            <div class="stat">
+                <h4>Fertile Days</h4>
+                <p id="fertile-days-stat">No data</p>
+            </div>
+        </div>
+      </div>
+      <div id="loading" style="display: none;">Loading...</div>
+    </div>
+
+    <!-- Modal for logging symptoms and flow -->
+    <div id="symptoms-modal" style="display: none;">
+      <h3>Log Symptoms & Flow</h3>
+      <label for="symptoms-date">Date</label>
+      <input type="date" id="symptoms-date">
+      <div class="symptoms">
+        <label><input type="checkbox" name="symptoms" value="cramps"> Cramps</label>
+        <label><input type="checkbox" name="symptoms" value="headache"> Headache</label>
+        <label><input type="checkbox" name="symptoms" value="mood-swings"> Mood Swings</label>
+        <label><input type="checkbox" name="symptoms" value="bloating"> Bloating</label>
+        <label><input type="checkbox" name="symptoms" value="fatigue"> Fatigue</label>
+      </div>
+      <label for="flow">Flow</label>
+      <select id="flow">
+        <option value="light">Light</option>
+        <option value="medium">Medium</option>
+        <option value="heavy">Heavy</option>
+      </select>
+      <button id="save-symptoms-btn">Save</button>
+      <button id="close-modal-btn">Close</button>
+    </div>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
