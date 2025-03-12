@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, fetchSignInMethodsForEmail, signOut } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, fetchSignInMethodsForEmail, signOut } from "firebase/auth";
 import { 
   getFirestore, 
   collection, 
@@ -12,7 +12,7 @@ import {
   setDoc, 
   updateDoc, 
   where
-} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+} from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.API_KEY,
@@ -26,6 +26,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+export { auth, db };
 
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
