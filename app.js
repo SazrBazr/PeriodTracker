@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, fetchSignInMethodsForEmail, signOut } from "firebase/auth";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, fetchSignInMethodsForEmail, signOut } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
 import { 
   getFirestore, 
   collection, 
@@ -12,22 +12,20 @@ import {
   setDoc, 
   updateDoc, 
   where
-} from "firebase/firestore";
+} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: process.env.API_KEY,
-    authDomain: process.env.AUTH_DOMAIN,
-    projectId: process.env.PROJECT_ID,
-    storageBucket: process.env.STORAGE_BUCKET,
-    messagingSenderId: process.env.MESSAGING_SENDER_ID,
-    appId: process.env.APP_ID
-  };
+    apiKey: "AIzaSyCUKI__XDO2uZuiodEDnwXiGLBQPlH8NG8",
+    authDomain: "unknownanswers-8fb4e.firebaseapp.com",
+    projectId: "unknownanswers-8fb4e",
+    storageBucket: "unknownanswers-8fb4e.appspot.com",
+    messagingSenderId: "220349774424",
+    appId: "1:220349774424:web:8577c7611af75425d0682d"
+};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-export { auth, db };
 
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
