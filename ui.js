@@ -1,5 +1,5 @@
 // ui.js
-import {getCycleHistory, getSymptomsHistory} from './firestore.js';
+import {getUserData, getCycleHistory, getSymptomsHistory, updateInvitationStatus, updateUserPartner, getPendingInvitations} from './firestore.js';
 import { auth } from './firebaseConfig.js';
 import { predictNextPeriod, calculateCycleStats, getCurrentCyclePhase, getNutritionTips } from './utils.js';
 
@@ -58,22 +58,30 @@ export function renderSymptomsHistory(symptoms) {
 export async function updateUi(){
     const user = auth.currentUser;
     if (!user) return;
-    const cycles = await getCycleHistory(user.uid);
     const symptoms = await getSymptomsHistory(user.uid);
+    const invitations = await getPendingInvitations(user.uid);
+        const userData = getUserData(user.uid);
+        let cycles;
+        if (userData.gender === "Female") {
+            cycles = await getCycleHistory(user.uid);
+        } else if (userData.partner) {
+            cycles = await getCycleHistory(userData.partner);
+        } else {
+            cycles = []; // No partner, so no cycles to display
+        }
 
-
-    renderCycleHistory(cycles);
-    renderSymptomsHistory(symptoms);
-    showPrediction(predictNextPeriod(cycles));
-    showCycleStats(calculateCycleStats(cycles));
-    showNutritionTips(getNutritionTips(getCurrentCyclePhase(cycles)));
-    setInterval(async () => {
+    if(invitations){
+        renderInvitations(invitations);
+    }
+    if(cycles){
         renderCycleHistory(cycles);
-        renderSymptomsHistory(symptoms);
         showPrediction(predictNextPeriod(cycles));
         showCycleStats(calculateCycleStats(cycles));
         showNutritionTips(getNutritionTips(getCurrentCyclePhase(cycles)));
-    }, 10000);
+    }
+    if(symptoms){
+        renderSymptomsHistory(symptoms);
+    }
 }
 
 export function renderInvitations(invitations) {
@@ -83,10 +91,60 @@ export function renderInvitations(invitations) {
         const li = document.createElement('li');
         li.innerHTML = `
             Invitation from: ${invitation.fromUserId}
-            <button class="accept-btn" data-invitation-id="${invitation.id}">Accept</button>
+            <button class="accept-btn" data-invitation-id="${invitation.id}" data-from-user-id="${invitation.fromUserId}">Accept</button>
             <button class="reject-btn" data-invitation-id="${invitation.id}">Reject</button>
         `;
         invitationsList.appendChild(li);
+    });
+
+    // Add event listeners for accept buttons
+    const acceptButtons = document.querySelectorAll('.accept-btn');
+    acceptButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            const invitationId = button.getAttribute('data-invitation-id');
+            const fromUserId = button.getAttribute('data-from-user-id');
+            const currentUserId = auth.currentUser.uid;
+
+            try {
+                // Add the sender as a partner to the current user
+                await updateUserPartner(currentUserId, fromUserId);
+
+                // Update the invitation status to "accepted"
+                await updateInvitationStatus(invitationId, 'accepted');
+
+                // Refresh the invitations list
+                const updatedInvitations = await getPendingInvitations(currentUserId);
+                renderInvitations(updatedInvitations);
+
+                alert('Invitation accepted! Partner added.');
+            } catch (error) {
+                console.error('Error accepting invitation:', error);
+                alert('Failed to accept invitation. Please try again.');
+            }
+        });
+    });
+
+    // Add event listeners for reject buttons
+    const rejectButtons = document.querySelectorAll('.reject-btn');
+    rejectButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            const invitationId = button.getAttribute('data-invitation-id');
+            const currentUserId = auth.currentUser.uid;
+
+            try {
+                // Update the invitation status to "rejected"
+                await updateInvitationStatus(invitationId, 'rejected');
+
+                // Refresh the invitations list
+                const updatedInvitations = await getPendingInvitations(currentUserId);
+                renderInvitations(updatedInvitations);
+
+                alert('Invitation rejected.');
+            } catch (error) {
+                console.error('Error rejecting invitation:', error);
+                alert('Failed to reject invitation. Please try again.');
+            }
+        });
     });
 }
 

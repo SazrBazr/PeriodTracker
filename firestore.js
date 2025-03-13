@@ -20,6 +20,10 @@ export async function addSymptomData(uid, data) {
 }
 
 export async function getCycleHistory(uid) {
+    if (!uid) {
+        console.error("UID is undefined.");
+        return [];
+    }
     const cyclesQuery = query(collection(db, 'users', uid, 'cycles'), orderBy('startDate', 'desc'));
     const querySnapshot = await getDocs(cyclesQuery);
     return querySnapshot.docs.map(doc => ({

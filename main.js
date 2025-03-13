@@ -20,123 +20,85 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.getElementById('login-btn');
     const signupBtn = document.getElementById('signup-btn');
     const logoutBtn = document.getElementById('logout-btn');
-    const shareEmailInput = document.getElementById('invite-email');
-    const sendInvitationBtn = document.getElementById('invite-btn');
+    const shareEmailInput = document.getElementById('messageInput');
+    const sendInvitationBtn = document.getElementById('sendButton');
     const startPeriodBtn = document.getElementById('start-period-btn');
     const endPeriodBtn = document.getElementById('end-period-btn');
-    // const logSymptomsBtn = document.getElementById('log-symptoms-btn');
     const symptomsModal = document.getElementById('symptoms-modal');
     const saveSymptomsBtn = document.getElementById('save-day-btn');
     const closeModalBtn = document.getElementById('close-modal-btn');
     const showSignup = document.getElementById('show-signup');
     const showLogin = document.getElementById('show-login');
-
-    // const dashboardTabBtn = document.getElementById('dashboard-tab-btn');
-    // const trackingTabBtn = document.getElementById('tracking-tab-btn');
-    // const statsTabBtn = document.getElementById('stats-tab-btn');
-
-    // const dashboardTab = document.getElementById('dashboard-tab');
-    // const trackingTab = document.getElementById('tracking-tab');
-    // const statsTab = document.getElementById('stats-tab');
-
-    // const hamburger = document.getElementById('hamburger');
-    // const navLinks = document.getElementById('nav-links');
+    const invitationsList = document.getElementById('invitations-list');
 
     let clickedDate = new Date().toISOString().split('T')[0];
 
     showDayDetails(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
 
-    // // Switch to Dashboard Tab
-    // dashboardTabBtn.addEventListener('click', () => {
-    //     setActiveTab(dashboardTabBtn, dashboardTab);
-    // });
-
-    // //Switch to Tracking Tab
-    // trackingTabBtn.addEventListener('click', () => {
-    //     setActiveTab(trackingTabBtn, trackingTab);
-    //     renderCalendar(); // Render the calendar when the tracking tab is opened
-    // });
-
-    // // Switch to Stats Tab
-    // statsTabBtn.addEventListener('click', () => {
-    //     setActiveTab(statsTabBtn, statsTab);
-    // });
-
-    // // Function to set the active tab
-    // function setActiveTab(button, tab) {
-    //     // Remove active class from all buttons and tabs
-    //     dashboardTabBtn.classList.remove('active');
-    //     trackingTabBtn.classList.remove('active');
-    //     statsTabBtn.classList.remove('active');
-
-    //     dashboardTab.classList.remove('active');
-    //     trackingTab.classList.remove('active');
-    //     statsTab.classList.remove('active');
-
-    //     // Add active class to the selected button and tab
-    //     button.classList.add('active');
-    //     tab.classList.add('active');
-    // }
-
-    // setActiveTab(dashboardTabBtn, dashboardTab);
-
     // Function to render the calendar
     async function renderCalendar(year = null, month = null) {
-        
-        const calendar = document.getElementById('calendar');
-        calendar.innerHTML = '';
+    const calendar = document.getElementById('calendar');
+    calendar.innerHTML = '';
 
-        const today = new Date();
+    const today = new Date();
+    const currentYear = year || today.getFullYear();
+    const currentMonth = month || today.getMonth();
 
-        const currentYear = year || today.getFullYear();
-        const currentMonth = month || today.getMonth();
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDay = firstDay.getDay();
 
-        const firstDay = new Date(currentYear, currentMonth, 1);
-        const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    // Create calendar header
+    const header = document.createElement('div');
+    header.className = 'calendar-header';
+    const prevMonthBtn = document.createElement('button');
+    prevMonthBtn.id = 'prev-month';
+    prevMonthBtn.textContent = '←';
+    prevMonthBtn.onclick = () => prevMonth(currentYear, currentMonth);
+    const nextMonthBtn = document.createElement('button');
+    nextMonthBtn.id = 'next-month';
+    nextMonthBtn.textContent = '→';
+    nextMonthBtn.onclick = () => nextMonth(currentYear, currentMonth);
+    const monthYear = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(firstDay);
+    const monthYearSpan = document.createElement('span');
+    monthYearSpan.textContent = monthYear;
+    header.appendChild(prevMonthBtn);
+    header.appendChild(monthYearSpan);
+    header.appendChild(nextMonthBtn);
+    calendar.appendChild(header);
 
-        const daysInMonth = lastDay.getDate();
-        const startingDay = firstDay.getDay();
+    // Create calendar grid
+    const grid = document.createElement('div');
+    grid.className = 'calendar-grid';
 
-        // Create calendar header
-        const header = document.createElement('div');
-        header.className = 'calendar-header';
-        const prevMonthBtn = document.createElement('button');
-        prevMonthBtn.id = 'prev-month';
-        prevMonthBtn.textContent = '←';
-        prevMonthBtn.onclick = () => prevMonth(currentYear, currentMonth);
-        const nextMonthBtn = document.createElement('button');
-        nextMonthBtn.id = 'next-month'; 
-        nextMonthBtn.textContent = '→';
-        nextMonthBtn.onclick = () => nextMonth(currentYear, currentMonth);
-        const monthYear = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(firstDay);
-        const monthYearSpan = document.createElement('span');
-        monthYearSpan.textContent = monthYear;
-        header.appendChild(prevMonthBtn);
-        header.appendChild(monthYearSpan);
-        header.appendChild(nextMonthBtn);
-        calendar.appendChild(header);
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < startingDay; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-cell empty';
+        grid.appendChild(cell);
+    }
 
-        // Create calendar grid
-        const grid = document.createElement('div');
-        grid.className = 'calendar-grid';
+    const user = auth.currentUser;
+    const userData = getUserData(user.uid);
+    if (!user) return;
 
-        // Add empty cells for days before the first day of the month
-        for (let i = 0; i < startingDay; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'calendar-cell empty';
-            grid.appendChild(cell);
-        }
+    let cycles;
+    if (userData.gender === "Female") {
+        cycles = await getCycleHistory(user.uid);
+    } else if (userData.partner) {
+        cycles = await getCycleHistory(userData.partner);
+    } else {
+        cycles = []; // No partner, so no cycles to display
+    }
 
-        const user = auth.currentUser;
-        if (!user) return;
-        const cycles = await getCycleHistory(user.uid);
-
+    if (!cycles.length === 0) {
         const currentDate = new Date();
 
         // Predict the start of the next period by adding the result of predictNextPeriod to the current date
         const expectedPeriodStart = new Date(currentDate);
         expectedPeriodStart.setDate(currentDate.getDate() + predictNextPeriod(cycles) - 1);
-        
+
         // Calculate the end of the period by adding the average period length to the start date
         const expectedPeriodEnd = new Date(expectedPeriodStart);
         expectedPeriodEnd.setDate(expectedPeriodStart.getDate() + calculateAveragePeriodLength(cycles));
@@ -163,40 +125,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const ovulationWindowEndDate = new Date(lastPeriodStart);
         ovulationWindowEndDate.setDate(lastPeriodStart.getDate() + ovulationWindowEnd);
+    }
 
-        // Add cells for each day of the month
-        for (let i = 1; i <= daysInMonth; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'calendar-cell';
-            cell.textContent = i;
+    // Add cells for each day of the month
+    for (let i = 1; i <= daysInMonth; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-cell';
+        cell.textContent = i;
 
-            // Disable future dates
-            const cellDate = new Date(currentYear, currentMonth, i);
-            if(expectedPeriodStart <= cellDate && cellDate <= expectedPeriodEnd){
+        const cellDate = new Date(currentYear, currentMonth, i);
+        // Disable future dates
+        if (!cycles.length === 0) {
+            if (expectedPeriodStart <= cellDate && cellDate <= expectedPeriodEnd) {
                 cell.classList.add('pDay');
             }
-            if(ovulationWindowStartDate <= cellDate && cellDate <= ovulationWindowEndDate){
+            if (ovulationWindowStartDate <= cellDate && cellDate <= ovulationWindowEndDate) {
                 cell.classList.add('ovDay');
             }
-            if (cellDate > today) {
-                cell.classList.add('disabled'); // Add a class to disable future dates
-            } else {
-                cell.addEventListener('click', () => {
-                    // Remove active class from all cells
-                    document.querySelectorAll('.calendar-cell').forEach(cell => {
-                        cell.classList.remove('active');
-                    });
-                    // Add active class to the clicked cell
-                    cell.classList.add('active');
-                    showDayDetails(currentYear, currentMonth, i + 1)
-                });
-            }
-
-            grid.appendChild(cell);
         }
 
-        calendar.appendChild(grid);
+        if (cellDate > today) {
+            cell.classList.add('disabled'); // Add a class to disable future dates
+        } else {
+            cell.addEventListener('click', () => {
+                // Remove active class from all cells
+                document.querySelectorAll('.calendar-cell').forEach(cell => {
+                    cell.classList.remove('active');
+                });
+                // Add active class to the clicked cell
+                cell.classList.add('active');
+                showDayDetails(currentYear, currentMonth, i + 1);
+            });
+        }
+
+        grid.appendChild(cell);
     }
+
+    calendar.appendChild(grid);
+}
 
     // Add event listeners for prev/next month buttons
     function prevMonth(year, month) {
@@ -224,10 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('day-details').style.display = 'block';
     }
 
-    // hamburger.addEventListener('click', () => {
-    //     navLinks.classList.toggle('active');
-    // });
-
     // Toggle between login and signup forms
     showSignup.addEventListener('click', () => {
         loginForm.style.display = 'none';
@@ -238,16 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
         signupForm.style.display = 'none';
         loginForm.style.display = 'block';
     });
-
-    // Toggle password visibility
-    window.togglePassword = (id) => {
-        const passwordInput = document.getElementById(id);
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-        } else {
-            passwordInput.type = 'password';
-        }
-    };
 
     // Event Listeners
     loginBtn.addEventListener('click', async () => {
@@ -266,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (userData.gender === 'female') {
                 document.getElementById('tracking-tab-btn').style.display = 'block';
                 document.getElementById('invitations-section').style.display = 'block';
-                updateUi();
+                await updateUi();
             }
         } catch (error) {
             alert(error.message);
@@ -301,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const user = await signup(email, password);
             await setUserData(user.uid, {
                 email: email,
+                password: password,
                 username: username,
                 gender: selectedGender,
                 uid: user.uid
@@ -344,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     
-        renderCycleHistory(await getCycleHistory(user.uid)); // Refresh history
+        await updateUi();
     });
 
     endPeriodBtn.addEventListener('click', async () => {
@@ -430,18 +383,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     onAuthChanged(async (user) => {
+        await updateUi();
+        renderCalendar();
         if (user) {
             const userData = await getUserData(user.uid);
             showDashboard(userData);
-            if (userData.gender === 'female') {
-                // document.getElementById('tracking-tab-btn').style.display = 'block';
+            if (userData.gender === 'Female') {
+                document.getElementById('day-details').style.display = 'block';
+                document.getElementById('female-only').style.display = 'block';
                 document.getElementById('invitations-section').style.display = 'block';
-                // document.getElementById('menu-bar').style.display = 'block';
-                renderCalendar();
-                updateUi();
             }
-            const invitations = await getPendingInvitations(user.uid);
-            renderInvitations(invitations);
+            else{
+                document.getElementById('day-details').style.display = 'none';
+                document.getElementById('female-only').style.display = 'none';
+                document.getElementById('invitations-section').style.display = 'none';
+            }
         } else {
             showAuth();
         }

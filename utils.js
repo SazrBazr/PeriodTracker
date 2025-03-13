@@ -1,5 +1,6 @@
 // utils.js
 export function predictNextPeriod(cycles) {
+    alert(cycles.length);
     if (cycles.length < 2) {
         return "Not enough data to predict.";
     }

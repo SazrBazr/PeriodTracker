@@ -13,96 +13,54 @@ body {
     padding: 20px;
 }
 
-.input-wrapper {
-    max-width: 90%;
-    width: fit-content;
-    height: 35px;
-    border-radius: 15px;
-    padding: 5px;
-    box-sizing: content-box;
-    display: flex;
-    align-items: center;
-    background-color: white;
-    border: 5px solid #ff6b6b;
-    margin-bottom: 20px;
-}
-
-.input {
-    max-width: 170px;
-    height: 100%;
-    border: none;
-    outline: none;
-    padding-left: 15px;
-    background-color: white;
-    color: black;
-    font-size: 1em;
-}
-.input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px #292524 inset;
-    -webkit-text-fill-color: #ffffff;
-}
-.Subscribe-btn {
-    height: 100%;
-    width: 95px;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    background-color: #ff6b6b;
-    font-weight: 500;
-    overflow: hidden;
+.messageBox {
+    max-width: 300px;
+    width: 100%;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    transition: all 0.3s;
+    border-radius: 10px;
+    border: 2px solid #ff6b6b;
+}
+.messageBox:focus-within {
+    border: 3px solid  #e94b4b;
+}
+#messageInput {
     margin-left: 10px;
+    width: 90%;
+    height: 100%;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    color: black;
 }
-.arrow {
-    display: none;
-    position: absolute;
-    margin-right: 150px;
-    transition: all 0.3s;
-}
-.input-wrapper:active .icon {
-    transform: scale(1.3);
-}
-.Subscribe-btn:hover {
-    color: white;
-}
-.Subscribe-btn:hover .arrow {
-    margin-right: 0;
-    animation: jello-vertical 0.9s both;
-    transform-origin: right;
+#messageInput:focus ~ #sendButton svg path,
+#messageInput:valid ~ #sendButton svg path {
+    stroke: #e94b4b;
 }
 
-@keyframes jello-vertical {
-    0% {
-    transform: scale3d(1, 1, 1);
-    }
-    30% {
-    transform: scale3d(0.75, 1.25, 1);
-    }
-    40% {
-    transform: scale3d(1.25, 0.75, 1);
-    }
-    50% {
-    transform: scale3d(0.85, 1.15, 1);
-    }
-    65% {
-    transform: scale3d(1.05, 0.95, 1);
-    }
-    75% {
-    transform: scale3d(0.95, 1.05, 1);
-    }
-    100% {
-    transform: scale3d(1, 1, 1);
-    }
+#sendButton {
+    height: 100%;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
 }
-.Subscribe-btn:active {
-    transform: scale(0.9);
+#sendButton svg {
+    height: 18px;
+    transition: all 0.3s;
 }
-  
+#sendButton svg path {
+    transition: all 0.3s;
+}
+#sendButton:hover svg path {
+    stroke: #e94b4b;
+}
 
 .btn-container{
     width: 100%;
@@ -327,12 +285,10 @@ label[for="flow"] {
 /* Buttons */
 button {
     display: inline-block;
-    padding: 10px 20px;
     font-size: 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-right: 10px;
     transition: background-color 0.3s ease;
 }
 
