@@ -31,13 +31,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const showSignup = document.getElementById('show-signup');
     const showLogin = document.getElementById('show-login');
 
-    const dashboardTabBtn = document.getElementById('dashboard-tab-btn');
-    const trackingTabBtn = document.getElementById('tracking-tab-btn');
-    const statsTabBtn = document.getElementById('stats-tab-btn');
+    // const dashboardTabBtn = document.getElementById('dashboard-tab-btn');
+    // const trackingTabBtn = document.getElementById('tracking-tab-btn');
+    // const statsTabBtn = document.getElementById('stats-tab-btn');
 
-    const dashboardTab = document.getElementById('dashboard-tab');
-    const trackingTab = document.getElementById('tracking-tab');
-    const statsTab = document.getElementById('stats-tab');
+    // const dashboardTab = document.getElementById('dashboard-tab');
+    // const trackingTab = document.getElementById('tracking-tab');
+    // const statsTab = document.getElementById('stats-tab');
 
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('nav-links');
@@ -46,39 +46,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     showDayDetails(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
 
-    // Switch to Dashboard Tab
-    dashboardTabBtn.addEventListener('click', () => {
-        setActiveTab(dashboardTabBtn, dashboardTab);
-    });
+    // // Switch to Dashboard Tab
+    // dashboardTabBtn.addEventListener('click', () => {
+    //     setActiveTab(dashboardTabBtn, dashboardTab);
+    // });
 
-    // Switch to Tracking Tab
-    trackingTabBtn.addEventListener('click', () => {
-        setActiveTab(trackingTabBtn, trackingTab);
-        renderCalendar(); // Render the calendar when the tracking tab is opened
-    });
+    // //Switch to Tracking Tab
+    // trackingTabBtn.addEventListener('click', () => {
+    //     setActiveTab(trackingTabBtn, trackingTab);
+    //     renderCalendar(); // Render the calendar when the tracking tab is opened
+    // });
 
-    // Switch to Stats Tab
-    statsTabBtn.addEventListener('click', () => {
-        setActiveTab(statsTabBtn, statsTab);
-    });
+    // // Switch to Stats Tab
+    // statsTabBtn.addEventListener('click', () => {
+    //     setActiveTab(statsTabBtn, statsTab);
+    // });
 
-    // Function to set the active tab
-    function setActiveTab(button, tab) {
-        // Remove active class from all buttons and tabs
-        dashboardTabBtn.classList.remove('active');
-        trackingTabBtn.classList.remove('active');
-        statsTabBtn.classList.remove('active');
+    // // Function to set the active tab
+    // function setActiveTab(button, tab) {
+    //     // Remove active class from all buttons and tabs
+    //     dashboardTabBtn.classList.remove('active');
+    //     trackingTabBtn.classList.remove('active');
+    //     statsTabBtn.classList.remove('active');
 
-        dashboardTab.classList.remove('active');
-        trackingTab.classList.remove('active');
-        statsTab.classList.remove('active');
+    //     dashboardTab.classList.remove('active');
+    //     trackingTab.classList.remove('active');
+    //     statsTab.classList.remove('active');
 
-        // Add active class to the selected button and tab
-        button.classList.add('active');
-        tab.classList.add('active');
-    }
+    //     // Add active class to the selected button and tab
+    //     button.classList.add('active');
+    //     tab.classList.add('active');
+    // }
 
-    setActiveTab(dashboardTabBtn, dashboardTab);
+    // setActiveTab(dashboardTabBtn, dashboardTab);
 
     // Function to render the calendar
     async function renderCalendar(year = null, month = null) {
