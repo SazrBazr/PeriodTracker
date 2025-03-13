@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // const trackingTab = document.getElementById('tracking-tab');
     // const statsTab = document.getElementById('stats-tab');
 
-    const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('nav-links');
+    // const hamburger = document.getElementById('hamburger');
+    // const navLinks = document.getElementById('nav-links');
 
     let clickedDate = new Date().toISOString().split('T')[0];
 
@@ -224,9 +224,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('day-details').style.display = 'block';
     }
 
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-    });
+    // hamburger.addEventListener('click', () => {
+    //     navLinks.classList.toggle('active');
+    // });
 
     // Toggle between login and signup forms
     showSignup.addEventListener('click', () => {
@@ -434,9 +434,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const userData = await getUserData(user.uid);
             showDashboard(userData);
             if (userData.gender === 'female') {
-                document.getElementById('tracking-tab-btn').style.display = 'block';
+                // document.getElementById('tracking-tab-btn').style.display = 'block';
                 document.getElementById('invitations-section').style.display = 'block';
-                document.getElementById('menu-bar').style.display = 'block';
+                // document.getElementById('menu-bar').style.display = 'block';
                 renderCalendar();
                 updateUi();
             }
