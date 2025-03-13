@@ -5,9 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Period Tracker</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- <link rel="icon" href="icons/appIcon128.png" type="image/png"> -->
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <!-- <link rel="icon" sizes="192x192" href="icons/appIcon192.png"> -->
+  <link rel="icon" sizes="512x512" href="icons/appIcon512.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
+  <nav id="menu-bar" style="display: none;">
+    <div class="hamburger" id="hamburger">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+    <ul class="nav-links" id="nav-links">
+      <li><button id="dashboard-tab-btn" class="active">Dashboard</button></li>
+      <li><button id="tracking-tab-btn" style="display: none;">Tracking</button></li>
+      <li><button id="stats-tab-btn">Stats</button></li>
+      <li><button id="logout-btn">Logout</button></li>
+    </ul>
+  </nav>
   <div id="app">
     <!-- Auth Container -->
     <div id="auth-container">
@@ -19,7 +37,7 @@
         <input type="email" id="login-email" placeholder="Email">
         <div class="password-container">
           <input type="password" id="login-password" placeholder="Password">
-          <span class="toggle-password" onclick="togglePassword('login-password')">👁️</span>
+          <span class="toggle-password" id="toggle-password">👁️</span>
         </div>
         <button id="login-btn">Login</button>
         <p>Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
@@ -53,12 +71,6 @@
     <div id="dashboard" style="display: none;">
       <header>
         <h2>Welcome, <span id="username"></span>!</h2>
-        <nav id="menu-bar">
-          <button id="dashboard-tab-btn" class="active">Dashboard</button>
-          <button id="tracking-tab-btn">Tracking</button>
-          <button id="stats-tab-btn">Stats</button>
-          <button id="logout-btn">Logout</button>
-        </nav>
       </header>
 
       <!-- Wrap the existing sections in tab containers -->
@@ -70,6 +82,12 @@
           <p>days</p>
         </div>
         <div class="female-only">
+          <section id="invitations-section" class="sharing" style="display: none;">
+            <h3>Share With Your Partner</h3>
+            <input type="email" id="partner-email" placeholder="Partner's Email">
+            <button id="invite-btn">Send Invitation</button>
+          </section>
+
           <h3>Nutrition Tips</h3>
           <section class="nutrition-tips">
             <div id="nutrition-tips-content">
@@ -85,35 +103,91 @@
         </section>
 
         <section class="history">
-          <h3>Cycle History</h3>
-          <ul id="cycle-history"></ul>
+          <div class="history-container">
+              <div>
+                <h3>Cycle History</h3>
+                <ul id="cycle-history"></ul>
+              </div>
+              <div>
+                <h3>Symptoms History</h3>
+                <ul id="symptoms-history"></ul>
+              </div>
+          </div>
         </section>
       </div>
-      
       <div id="tracking-tab" class="tab-content">
         <h3>Tracking</h3>
-        <div id="calendar"></div>
-        <div id="day-details" style="display: none;">
-            <h4 id="selected-date"></h4>
+        <div id="calendar-container">
+            <div id="calendar">
+                <div class="calendar-header">
+                    <button id="prev-month">&lt;</button>
+                    <h4 id="current-month">Month Year</h4>
+                    <button id="next-month">&gt;</button>
+                </div>
+                <div class="calendar-grid">
+                    <!-- Calendar cells will be dynamically generated here -->
+                </div>
+            </div>
+        </div>
+        <div id="day-details">
+            <h4 id="selected-date">Selected Date</h4>
             <div class="symptoms">
-                <label><input type="checkbox" name="symptoms" value="cramps"> Cramps</label>
-                <label><input type="checkbox" name="symptoms" value="headache"> Headache</label>
-                <label><input type="checkbox" name="symptoms" value="mood-swings"> Mood Swings</label>
-                <label><input type="checkbox" name="symptoms" value="bloating"> Bloating</label>
-                <label><input type="checkbox" name="symptoms" value="fatigue"> Fatigue</label>
+              <div class="checkbox-wrapper-47">
+                <input id="ac" type="checkbox" name="symptoms" value="Abdominal Cramps" class="s-check-box">
+                <label for="ac">Abdominal Cramps</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="ms" type="checkbox" name="symptoms" value="Mood Swings" class="s-check-box">
+                <label for="ms">Mood Swings</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="ha" type="checkbox" name="symptoms" value="Headache" class="s-check-box">
+                <label for="ha">Headache</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="blo" type="checkbox" name="symptoms" value="Bloating" class="s-check-box">
+                <label for="blo">Bloating</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="ap-ch" type="checkbox" name="symptoms" value="Appetite Changes" class="s-check-box">
+                <label for="ap-ch">Appetite Changes</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="fati" type="checkbox" name="symptoms" value="Fatigue" class="s-check-box">
+                <label for="fati">Fatigue</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="bi" type="checkbox" name="symptoms" value="Bladder Incontinence" class="s-check-box">
+                <label for="bi">Bladder Incontinence</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="acne" type="checkbox" name="symptoms" value="Acne" class="s-check-box">
+                <label for="acne">Acne</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="bp" type="checkbox" name="symptoms" value="Breast Pain" class="s-check-box">
+                <label for="bp">Breast Pain</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="chi" type="checkbox" name="symptoms" value="Chills" class="s-check-box">
+                <label for="chi">Chills</label>
+              </div>
             </div>
             <label for="flow">Flow</label>
             <select id="flow">
-                <option value="light">Light</option>
-                <option value="medium">Medium</option>
-                <option value="heavy">Heavy</option>
+                <option value="No Flow">No Flow</option>
+                <option value="Light">Light</option>
+                <option value="Medium">Medium</option>
+                <option value="Heavy">Heavy</option>
             </select>
-            <button id="save-day-btn">Save</button>
-            <button id="start-period-btn">Start Period</button>
-            <button id="end-period-btn" style="display: none;">End Period</button>
+            <button id="save-day-btn">Save Symptoms</button>
+            <div class="btn-container">
+              <button id="start-period-btn">Start Period</button>
+              <button id="end-period-btn">End Period</button>
+            </div>
+
         </div>
       </div>
-
       <div id="stats-tab" class="tab-content">
         <h3>Stats</h3>
         <div class="stats-grid">
@@ -160,6 +234,11 @@
       <button id="close-modal-btn">Close</button>
     </div>
   </div>
-  <script type="module" src="app.js"></script>
+  <script type="module" src="main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js');
+    }
+  </script>
 </body>
 </html>

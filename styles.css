@@ -13,6 +13,368 @@ body {
     padding: 20px;
 }
 
+.btn-container{
+    width: 100%;
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.checkbox-wrapper-47{
+    z-index: 2;
+}
+
+.checkbox-wrapper-47 input[type="checkbox"] {
+    display: none;
+    visibility: hidden;
+}
+
+.checkbox-wrapper-47 label {
+    position: relative;
+    padding-left: 2em;
+    padding-right: 0.25em;
+    line-height: 2;
+    cursor: pointer;
+    display: inline-flex;
+}
+
+.checkbox-wrapper-47 label:before {
+    box-sizing: border-box;
+    content: " ";
+    position: absolute;
+    top: 0.3em;
+    left: 0;
+    display: block;
+    width: 1.4em;
+    height: 1.4em;
+    border: 2px solid #9098A9;
+    border-radius: 6px;
+    z-index: -1;
+}
+
+.checkbox-wrapper-47 input[type=checkbox]:checked + label {
+    padding-left: 1em;
+    color: #0f5229;
+}
+.checkbox-wrapper-47 input[type=checkbox]:checked + label:before {
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #b7e6c9;
+    border-color: #2cbc63;
+}
+
+.checkbox-wrapper-47 label,
+.checkbox-wrapper-47 label::before {
+    transition: 0.25s all ease;
+}
+
+@media (min-width: 768px) {
+    .symptoms {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    button {
+        width: auto;
+        margin-right: 10px;
+    }
+}
+
+.history-container{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
+    gap: 20px; /* Space between grid items */
+}
+
+button{
+    background-color: #ff6b6b;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    border: none;
+}
+
+.tab-content {
+    max-width: 100%;
+    margin: 10px auto;
+    padding: 15px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#calendar-container {
+    margin-bottom: 15px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-cell {
+    padding: 10px 5px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.calendar-cell.empty {
+    background-color: #f7f7f7;
+    border: none;
+}
+
+.calendar-cell:hover {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.calendar-cell.active {
+    background-color: #ff0000;
+    color: #fff;
+}
+
+.calendar-cell.disabled {
+    pointer-events: none;
+    color: #ccc;
+}
+
+.calendar-cell.pDay {
+    color: white;
+    background-color: #FF6B6B;
+}
+
+.calendar-cell.ovDay {
+    background-color: #00ff7b;
+    color: black;
+}
+
+#day-details {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 10px;
+}
+
+.symptoms {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.symptoms label {
+    font-size: 14px;
+}
+
+#flow {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+h4 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.symptoms {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.symptoms label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #555;
+}
+
+.symptoms input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Flow Select */
+label[for="flow"] {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+#flow {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+/* Buttons */
+button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+#save-day-btn {
+    background-color: #2196F3;
+    color: #fff;
+    width: 100%;
+}
+
+#save-day-btn:hover {
+    background-color: #1e88e5;
+}
+
+#start-period-btn {
+    width: 100%;
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+#start-period-btn:hover {
+    background-color: #45a049;
+}
+
+#end-period-btn {
+    width: 100%;
+    background-color: #f44336;
+    color: #fff;
+}
+
+#end-period-btn:hover {
+    background-color: #e53935;
+}
+
+/* Responsive Design
+@media (max-width: 768px) {
+    .tab-content {
+        padding: 15px;
+    }
+
+    h3 {
+        font-size: 22px;
+    }
+
+    #calendar {
+        height: 200px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    h4 {
+        font-size: 18px;
+    }
+
+    .symptoms label {
+        font-size: 14px;
+    }
+
+    #flow {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+} */
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.hamburger .line {
+    width: 25px;
+    height: 3px;
+    background-color: #FF6B6B;
+    margin: 4px 0;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    z-index: 2;
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-links {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        background-color: #f7f7f7;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in;
+    }
+
+    .nav-links li {
+        margin: 20px 0;
+    }
+
+    .nav-links.active {
+        transform: translateX(0);
+    }
+}
+
 #prediction-circle {
     text-align: center;
     margin: 20px auto;
@@ -27,6 +389,7 @@ body {
     justify-content: center;
     align-items: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1; /* Ensures the prediction circle is below the menu */
 }
 
 #prediction-circle h3 {
@@ -107,63 +470,6 @@ input[type=radio]:checked + label:after {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
-}
-
-
-#app {
-    max-width: 600px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-/* Auth Container */
-#auth-container {
-    padding: 20px;
-    text-align: center;
-}
-
-#auth-container h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-}
-
-#auth-container input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-#auth-container button {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #ff6b6b;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-#auth-container button:hover {
-    background-color: #ff4c4c;
-}
-
-.password-container {
-    position: relative;
-}
-
-.toggle-password {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
 }
 
 /* Dashboard */
@@ -277,18 +583,6 @@ body.male .female-only {
     border-radius: 5px;
 }
 
-.symptoms {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.symptoms label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
 #save-period-btn {
     width: 100%;
     padding: 10px;
@@ -304,18 +598,19 @@ body.male .female-only {
 }
 
 /* Cycle History */
-#cycle-history,
+#cycle-history, #symptoms-history,
 #invitations-list {
     list-style-type: none;
 }
 
-#cycle-history li,
+#cycle-history li, #symptoms-history li,
 #invitations-list li {
     background: #f7f7f7;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
 }
+
 
 /* Loading Indicator */
 #loading {
@@ -384,55 +679,12 @@ body.male .female-only {
     color: #ff6b6b;
 }
 
-
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-}
-
-.calendar-cell {
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.calendar-cell.empty {
-    background-color: #f7f7f7;
-    border: none;
-}
-
-.calendar-cell:hover {
-    background-color: #ff6b6b;
-    color: white;
-}
-
-.tracking-tab {
-    margin: 20px;
-    padding: 20px;
-    background-color: #f7f7f7;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-#day-details {
-    margin-top: 20px;
-}
-
 /* Menu Bar */
 #menu-bar {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    z-index: 2; /* Menu appears above the prediction circle */
 }
 
 #menu-bar button {
@@ -453,27 +705,4 @@ body.male .female-only {
 #menu-bar button:hover {
     background-color: #ff4c4c;
     color: white;
-}
-
-/* Tab Content */
-.tab-content {
-    display: none;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.tab-content.active {
-    display: block;
-}
-
-.calendar-cell.active {
-    background-color: #ff0000; /* Red background for active date */
-    color: #fff; /* White text for active date */
-}
-
-.calendar-cell.disabled {
-    color: #ccc; /* Gray out future dates */
-    pointer-events: none; /* Disable clicking */
 }
