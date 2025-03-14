@@ -55,31 +55,38 @@ export function renderSymptomsHistory(symptoms) {
     });
 }
 
-export async function updateUi(){
+export async function updateUi() {
     const user = auth.currentUser;
     if (!user) return;
+
     const symptoms = await getSymptomsHistory(user.uid);
     const invitations = await getPendingInvitations(user.uid);
-        const userData = getUserData(user.uid);
-        let cycles;
-        if (userData.gender === "Female") {
-            cycles = await getCycleHistory(user.uid);
-        } else if (userData.partner) {
-            cycles = await getCycleHistory(userData.partner);
-        } else {
-            cycles = []; // No partner, so no cycles to display
-        }
+    const userData = await getUserData(user.uid); // Ensure this is awaited
+    console.log("User Data:", userData); // Log user data
 
-    if(invitations){
+    let cycles;
+    if (userData.gender === "Female") {
+        cycles = await getCycleHistory(user.uid);
+    } else if (userData.partner) {
+        cycles = await getCycleHistory(userData.partner);
+    } else {
+        cycles = []; // No partner, so no cycles to display
+    }
+
+    console.log("Cycles:", cycles); // Log cycles
+
+    if (invitations) {
         renderInvitations(invitations);
     }
-    if(cycles){
+    if (cycles.length > 0) { // Ensure cycles is not empty
         renderCycleHistory(cycles);
         showPrediction(predictNextPeriod(cycles));
         showCycleStats(calculateCycleStats(cycles));
         showNutritionTips(getNutritionTips(getCurrentCyclePhase(cycles)));
+    } else {
+        console.log("No cycles found for the user."); // Log if cycles are empty
     }
-    if(symptoms){
+    if (symptoms) {
         renderSymptomsHistory(symptoms);
     }
 }

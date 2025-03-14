@@ -26,6 +26,7 @@ export async function getCycleHistory(uid) {
     }
     const cyclesQuery = query(collection(db, 'users', uid, 'cycles'), orderBy('startDate', 'desc'));
     const querySnapshot = await getDocs(cyclesQuery);
+    console.log("Fetched cycles:", querySnapshot.docs.map(doc => doc.data())); // Log fetched data
     return querySnapshot.docs.map(doc => ({
         ...doc.data(),
         ref: doc.ref // Save reference to update document later

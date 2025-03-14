@@ -1,6 +1,6 @@
 // auth.js
 import { auth } from './firebaseConfig.js';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+import { signInWithEmailAndPassword, sendEmailVerification , createUserWithEmailAndPassword, signOut, onAuthStateChanged, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
 
 export async function login(email, password) {
     try {
@@ -14,6 +14,8 @@ export async function login(email, password) {
 export async function signup(email, password) {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        await sendEmailVerification(user);
         return userCredential.user;
     } catch (error) {
         throw error;

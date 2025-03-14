@@ -37,148 +37,148 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to render the calendar
     async function renderCalendar(year = null, month = null) {
-    const calendar = document.getElementById('calendar');
-    calendar.innerHTML = '';
+        const calendar = document.getElementById('calendar');
+        calendar.innerHTML = '';
 
-    const today = new Date();
-    const currentYear = year || today.getFullYear();
-    const currentMonth = month || today.getMonth();
+        const today = new Date();
+        const currentYear = year || today.getFullYear();
+        const currentMonth = month || today.getMonth();
 
-    const firstDay = new Date(currentYear, currentMonth, 1);
-    const lastDay = new Date(currentYear, currentMonth + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDay = firstDay.getDay();
+        const firstDay = new Date(currentYear, currentMonth, 1);
+        const lastDay = new Date(currentYear, currentMonth + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startingDay = firstDay.getDay();
 
-    // Create calendar header
-    const header = document.createElement('div');
-    header.className = 'calendar-header';
-    const prevMonthBtn = document.createElement('button');
-    prevMonthBtn.id = 'prev-month';
-    prevMonthBtn.textContent = '←';
-    prevMonthBtn.onclick = () => prevMonth(currentYear, currentMonth);
-    const nextMonthBtn = document.createElement('button');
-    nextMonthBtn.id = 'next-month';
-    nextMonthBtn.textContent = '→';
-    nextMonthBtn.onclick = () => nextMonth(currentYear, currentMonth);
-    const monthYear = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(firstDay);
-    const monthYearSpan = document.createElement('span');
-    monthYearSpan.textContent = monthYear;
-    header.appendChild(prevMonthBtn);
-    header.appendChild(monthYearSpan);
-    header.appendChild(nextMonthBtn);
-    calendar.appendChild(header);
+        // Create calendar header
+        const header = document.createElement('div');
+        header.className = 'calendar-header';
+        const prevMonthBtn = document.createElement('button');
+        prevMonthBtn.id = 'prev-month';
+        prevMonthBtn.textContent = '←';
+        prevMonthBtn.onclick = () => prevMonth(currentYear, currentMonth);
+        const nextMonthBtn = document.createElement('button');
+        nextMonthBtn.id = 'next-month';
+        nextMonthBtn.textContent = '→';
+        nextMonthBtn.onclick = () => nextMonth(currentYear, currentMonth);
+        const monthYear = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(firstDay);
+        const monthYearSpan = document.createElement('span');
+        monthYearSpan.textContent = monthYear;
+        header.appendChild(prevMonthBtn);
+        header.appendChild(monthYearSpan);
+        header.appendChild(nextMonthBtn);
+        calendar.appendChild(header);
 
-    // Create calendar grid
-    const grid = document.createElement('div');
-    grid.className = 'calendar-grid';
+        // Create calendar grid
+        const grid = document.createElement('div');
+        grid.className = 'calendar-grid';
 
-    // Add empty cells for days before the first day of the month
-    for (let i = 0; i < startingDay; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'calendar-cell empty';
-        grid.appendChild(cell);
-    }
-
-    const user = auth.currentUser;
-    const userData = getUserData(user.uid);
-    if (!user) return;
-
-    let cycles;
-    if (userData.gender === "Female") {
-        cycles = await getCycleHistory(user.uid);
-    } else if (userData.partner) {
-        cycles = await getCycleHistory(userData.partner);
-    } else {
-        cycles = []; // No partner, so no cycles to display
-    }
-
-    if (!cycles.length === 0) {
-        const currentDate = new Date();
-
-        // Predict the start of the next period by adding the result of predictNextPeriod to the current date
-        const expectedPeriodStart = new Date(currentDate);
-        expectedPeriodStart.setDate(currentDate.getDate() + predictNextPeriod(cycles) - 1);
-
-        // Calculate the end of the period by adding the average period length to the start date
-        const expectedPeriodEnd = new Date(expectedPeriodStart);
-        expectedPeriodEnd.setDate(expectedPeriodStart.getDate() + calculateAveragePeriodLength(cycles));
-
-        // Assuming cycles[0].startDate is a valid Date object
-        const lastPeriodStart = new Date(cycles[0].startDate);
-
-        // Calculate the average cycle length
-        const avgCycleLength = calculateCycleLength(cycles);
-
-        // Calculate the ovulation day (14 days before the end of the cycle)
-        const ovulationDay = Math.round(avgCycleLength - 14);
-
-        // Calculate the ovulation window (2 days before and after ovulation day)
-        const ovulationWindowStart = ovulationDay - 2;
-        const ovulationWindowEnd = ovulationDay + 2;
-
-        // Create Date objects for the ovulation day and its window
-        const ovulationDate = new Date(lastPeriodStart);
-        ovulationDate.setDate(lastPeriodStart.getDate() + ovulationDay);
-
-        const ovulationWindowStartDate = new Date(lastPeriodStart);
-        ovulationWindowStartDate.setDate(lastPeriodStart.getDate() + ovulationWindowStart - 1);
-
-        const ovulationWindowEndDate = new Date(lastPeriodStart);
-        ovulationWindowEndDate.setDate(lastPeriodStart.getDate() + ovulationWindowEnd);
-    }
-
-    // Add cells for each day of the month
-    for (let i = 1; i <= daysInMonth; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'calendar-cell';
-        cell.textContent = i;
-
-        const cellDate = new Date(currentYear, currentMonth, i);
-        // Disable future dates
-        if (!cycles.length === 0) {
-            if (expectedPeriodStart <= cellDate && cellDate <= expectedPeriodEnd) {
-                cell.classList.add('pDay');
-            }
-            if (ovulationWindowStartDate <= cellDate && cellDate <= ovulationWindowEndDate) {
-                cell.classList.add('ovDay');
-            }
+        // Add empty cells for days before the first day of the month
+        for (let i = 0; i < startingDay; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'calendar-cell empty';
+            grid.appendChild(cell);
         }
 
-        if (cellDate > today) {
-            cell.classList.add('disabled'); // Add a class to disable future dates
+        const user = auth.currentUser;
+        const userData = await getUserData(user.uid);
+        if (!user) return;
+
+        let cycles;
+        if (userData.gender === "Female") {
+            cycles = await getCycleHistory(user.uid);
+        } else if (userData.partner) {
+            cycles = await getCycleHistory(userData.partner);
         } else {
-            cell.addEventListener('click', () => {
-                // Remove active class from all cells
-                document.querySelectorAll('.calendar-cell').forEach(cell => {
-                    cell.classList.remove('active');
-                });
-                // Add active class to the clicked cell
-                cell.classList.add('active');
-                showDayDetails(currentYear, currentMonth, i + 1);
-            });
+            cycles = []; // No partner, so no cycles to display
         }
 
-        grid.appendChild(cell);
-    }
+        if (!cycles.length === 0) {
+            const currentDate = new Date();
 
-    calendar.appendChild(grid);
-}
+            // Predict the start of the next period by adding the result of predictNextPeriod to the current date
+            const expectedPeriodStart = new Date(currentDate);
+            expectedPeriodStart.setDate(currentDate.getDate() + predictNextPeriod(cycles) - 1);
+
+            // Calculate the end of the period by adding the average period length to the start date
+            const expectedPeriodEnd = new Date(expectedPeriodStart);
+            expectedPeriodEnd.setDate(expectedPeriodStart.getDate() + calculateAveragePeriodLength(cycles));
+
+            // Assuming cycles[0].startDate is a valid Date object
+            const lastPeriodStart = new Date(cycles[0].startDate);
+
+            // Calculate the average cycle length
+            const avgCycleLength = calculateCycleLength(cycles);
+
+            // Calculate the ovulation day (14 days before the end of the cycle)
+            const ovulationDay = Math.round(avgCycleLength - 14);
+
+            // Calculate the ovulation window (2 days before and after ovulation day)
+            const ovulationWindowStart = ovulationDay - 2;
+            const ovulationWindowEnd = ovulationDay + 2;
+
+            // Create Date objects for the ovulation day and its window
+            const ovulationDate = new Date(lastPeriodStart);
+            ovulationDate.setDate(lastPeriodStart.getDate() + ovulationDay);
+
+            const ovulationWindowStartDate = new Date(lastPeriodStart);
+            ovulationWindowStartDate.setDate(lastPeriodStart.getDate() + ovulationWindowStart - 1);
+
+            const ovulationWindowEndDate = new Date(lastPeriodStart);
+            ovulationWindowEndDate.setDate(lastPeriodStart.getDate() + ovulationWindowEnd);
+        }
+
+        // Add cells for each day of the month
+        for (let i = 1; i <= daysInMonth; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'calendar-cell';
+            cell.textContent = i;
+
+            const cellDate = new Date(currentYear, currentMonth, i);
+            // Disable future dates
+            if (!cycles.length === 0) {
+                if (expectedPeriodStart <= cellDate && cellDate <= expectedPeriodEnd) {
+                    cell.classList.add('pDay');
+                }
+                if (ovulationWindowStartDate <= cellDate && cellDate <= ovulationWindowEndDate) {
+                    cell.classList.add('ovDay');
+                }
+            }
+
+            if (cellDate > today) {
+                cell.classList.add('disabled'); // Add a class to disable future dates
+            } else {
+                cell.addEventListener('click', () => {
+                    // Remove active class from all cells
+                    document.querySelectorAll('.calendar-cell').forEach(cell => {
+                        cell.classList.remove('active');
+                    });
+                    // Add active class to the clicked cell
+                    cell.classList.add('active');
+                    showDayDetails(currentYear, currentMonth, i + 1);
+                });
+            }
+
+            grid.appendChild(cell);
+        }
+
+        calendar.appendChild(grid);
+    }
 
     // Add event listeners for prev/next month buttons
-    function prevMonth(year, month) {
+    async function prevMonth(year, month) {
         if(month === 1) {
-            renderCalendar(year - 1, 12);
+            await renderCalendar(year - 1, 12);
         }else {
-            renderCalendar(year, month - 1);
+            await renderCalendar(year, month - 1);
         }
     }
 
-    function nextMonth(year, month) {
+    async function nextMonth(year, month) {
         if(month === 12) {
-            renderCalendar(year + 1, 1);
+            await renderCalendar(year + 1, 1);
         }
         else{
-            renderCalendar(year, month + 1);
+            await renderCalendar(year, month + 1);
         }
     }
 
@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     onAuthChanged(async (user) => {
         await updateUi();
-        renderCalendar();
+        await renderCalendar();
         if (user) {
             const userData = await getUserData(user.uid);
             showDashboard(userData);
