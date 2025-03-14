@@ -80,9 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const user = auth.currentUser;
-        const userData = await getUserData(user.uid);
         if (!user) return;
-
+        const userData = await getUserData(user.uid);
         let cycles;
         if (userData.gender === "Female") {
             cycles = await getCycleHistory(user.uid);
@@ -211,14 +210,30 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        await updateUi();
+        await renderCalendar();
+        
         try {
             const user = await login(email, password);
-            const userData = await getUserData(user.uid);
-            showDashboard(userData);
-            if (userData.gender === 'female') {
-                document.getElementById('tracking-tab-btn').style.display = 'block';
-                document.getElementById('invitations-section').style.display = 'block';
-                await updateUi();
+            if (user) {
+                //if (user.emailVerified) {
+                    const userData = await getUserData(user.uid);
+                    showDashboard(userData);
+                    if (userData.gender === 'Female') {
+                        document.getElementById('day-details').style.display = 'block';
+                        document.getElementById('female-only').style.display = 'block';
+                        document.getElementById('invitations-section').style.display = 'block';
+                    }
+                    else{
+                        document.getElementById('day-details').style.display = 'none';
+                        document.getElementById('female-only').style.display = 'none';
+                        document.getElementById('invitations-section').style.display = 'none';
+                    }
+                //} else {
+                    console.log("Email is not verified.");
+                    showAuth();
+                    //alert("Please verify your email first");
+                //}
             }
         } catch (error) {
             alert(error.message);
@@ -386,20 +401,27 @@ document.addEventListener('DOMContentLoaded', () => {
         await updateUi();
         await renderCalendar();
         if (user) {
-            const userData = await getUserData(user.uid);
-            showDashboard(userData);
-            if (userData.gender === 'Female') {
-                document.getElementById('day-details').style.display = 'block';
-                document.getElementById('female-only').style.display = 'block';
-                document.getElementById('invitations-section').style.display = 'block';
-            }
-            else{
-                document.getElementById('day-details').style.display = 'none';
-                document.getElementById('female-only').style.display = 'none';
-                document.getElementById('invitations-section').style.display = 'none';
-            }
+            //if (user.emailVerified) {
+                const userData = await getUserData(user.uid);
+                showDashboard(userData);
+                if (userData.gender === 'Female') {
+                    document.getElementById('day-details').style.display = 'block';
+                    document.getElementById('female-only').style.display = 'block';
+                    document.getElementById('invitations-section').style.display = 'block';
+                }
+                else{
+                    document.getElementById('day-details').style.display = 'none';
+                    document.getElementById('female-only').style.display = 'none';
+                    document.getElementById('invitations-section').style.display = 'none';
+                }
+            //} else {
+                console.log("Email is not verified.");
+                
+            //}
+
         } else {
             showAuth();
+            //alert("Please verify your email first");
         }
     });
 });
