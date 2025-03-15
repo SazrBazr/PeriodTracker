@@ -13,6 +13,10 @@ body {
     padding: 20px;
 }
 
+label{
+    user-select: none;
+}
+
 .messageBox {
     margin-bottom: 20px;
     max-width: 300px;
@@ -156,6 +160,7 @@ button{
 
 #calendar-container {
     margin-bottom: 15px;
+    
 }
 
 .calendar-header {
@@ -197,7 +202,6 @@ button{
 
 .calendar-cell.disabled {
     pointer-events: none;
-    color: #ccc;
 }
 
 .calendar-cell.pDay {
@@ -229,12 +233,26 @@ button{
 }
 
 #flow {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 15px;
+    width: 100%; /* Full width to fit the screen */
+    padding: 12px; /* Add padding for better touch interaction */
+    font-size: 16px; /* Increase font size for readability */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background */
+    appearance: none; /* Remove default arrow in some browsers */
+    -webkit-appearance: none; /* Remove default arrow in Safari */
+    -moz-appearance: none; /* Remove default arrow in Firefox */
+    cursor: pointer; /* Show pointer cursor */
+}
+
+#flow:focus {
+    border-color: #FF6B6B; /* Highlight border on focus */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow */
+}
+
+#flow:hover {
+    background-color: #e9ecef; /* Change background on hover */
 }
 
 h3 {

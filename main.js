@@ -91,15 +91,18 @@ document.addEventListener('DOMContentLoaded', () => {
             cycles = []; // No partner, so no cycles to display
         }
 
-        if (!cycles.length === 0) {
-            const currentDate = new Date();
+        const currentDate = new Date();
+        let expectedPeriodStart = new Date(currentDate);
+        let expectedPeriodEnd;
+        let ovulationWindowStartDate;
+        let ovulationWindowEndDate;
 
+        if (cycles.length != 0) {
             // Predict the start of the next period by adding the result of predictNextPeriod to the current date
-            const expectedPeriodStart = new Date(currentDate);
             expectedPeriodStart.setDate(currentDate.getDate() + predictNextPeriod(cycles) - 1);
 
             // Calculate the end of the period by adding the average period length to the start date
-            const expectedPeriodEnd = new Date(expectedPeriodStart);
+            expectedPeriodEnd = new Date(expectedPeriodStart);
             expectedPeriodEnd.setDate(expectedPeriodStart.getDate() + calculateAveragePeriodLength(cycles));
 
             // Assuming cycles[0].startDate is a valid Date object
@@ -119,10 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const ovulationDate = new Date(lastPeriodStart);
             ovulationDate.setDate(lastPeriodStart.getDate() + ovulationDay);
 
-            const ovulationWindowStartDate = new Date(lastPeriodStart);
+            ovulationWindowStartDate = new Date(lastPeriodStart);
             ovulationWindowStartDate.setDate(lastPeriodStart.getDate() + ovulationWindowStart - 1);
 
-            const ovulationWindowEndDate = new Date(lastPeriodStart);
+            ovulationWindowEndDate = new Date(lastPeriodStart);
             ovulationWindowEndDate.setDate(lastPeriodStart.getDate() + ovulationWindowEnd);
         }
 
@@ -133,12 +136,14 @@ document.addEventListener('DOMContentLoaded', () => {
             cell.textContent = i;
 
             const cellDate = new Date(currentYear, currentMonth, i);
+            const cellCheckDate = new Date(currentYear, currentMonth, i+1);
+
             // Disable future dates
-            if (!cycles.length === 0) {
-                if (expectedPeriodStart <= cellDate && cellDate <= expectedPeriodEnd) {
+            if (cycles.length != 0) {
+                if (expectedPeriodStart <= cellCheckDate && cellCheckDate <= expectedPeriodEnd) {
                     cell.classList.add('pDay');
                 }
-                if (ovulationWindowStartDate <= cellDate && cellDate <= ovulationWindowEndDate) {
+                if (ovulationWindowStartDate <= cellCheckDate && cellCheckDate <= ovulationWindowEndDate) {
                     cell.classList.add('ovDay');
                 }
             }
