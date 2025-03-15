@@ -13,6 +13,38 @@ body {
     padding: 20px;
 }
 
+#loading-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1000; /* Ensure it's on top of everything */
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #007bff; /* Blue color for the spinner */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite; /* Spin animation */
+}
+
+@keyframes spin {
+    0% {
+    transform: rotate(0deg);
+    }
+    100% {
+    transform: rotate(360deg);
+    }
+}
+
 label{
     user-select: none;
 }
@@ -160,7 +192,7 @@ button{
 
 #calendar-container {
     margin-bottom: 15px;
-    
+
 }
 
 .calendar-header {
@@ -177,7 +209,7 @@ button{
 }
 
 .calendar-cell {
-    padding: 10px 5px;
+    padding: 15px 5px;
     text-align: center;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -718,57 +750,95 @@ body.male .female-only {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Container for the stats grid */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Space between cards */
+    padding: 20px;
 }
 
+/* Individual stat card */
 .stat {
-    background-color: white;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative; /* Needed for absolute positioning of the info icon */
+    background: #ffffff; /* White background */
+    border: 1px solid #e0e0e0; /* Light border */
+    border-radius: 12px; /* Rounded corners */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
 }
 
-.stat h4 {
-    margin: 0 0 10px;
-    font-size: 1.1rem;
-    color: #333;
+/* Hover effect for cards */
+.stat:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
 }
 
+/* Info icon positioning */
+.stat .info {
+    position: absolute; /* Position relative to the card */
+    top: 30px; /* Distance from the top */
+    right: 20px; /* Distance from the right */
+    cursor: pointer; /* Indicates it's clickable */
+    opacity: 0.7; /* Slightly transparent */
+    transition: opacity 0.2s ease; /* Smooth hover effect */
+}
+
+/* Tooltip styling */
+.info-card {
+    display: none; /* Hidden by default */
+    position: absolute;
+    bottom: 100%; /* Position above the tooltip */
+    right: 0%;
+    background-color: #333; /* Dark background */
+    color: #fff; /* White text */
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap; /* Prevent text from wrapping */
+    z-index: 10; /* Ensure it's above other elements */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.info-card::before {
+    content: '';
+    position: absolute;
+    top: 100%; /* Position above the tooltip */
+    right: 20px; /* Distance from the right */
+    transform: translateX(-50%) rotate(180deg);
+    z-index: 10; /* Ensure it's above other elements */
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent; /* Arrow pointing down */
+}
+
+/* Show the tooltip when the info icon is clicked */
+.stat.active .info-card {
+    display: block;
+    opacity: 1;
+}
+
+/* Card title styling */
+.stat h2 {
+    font-size: 18px; /* Title size */
+    font-weight: 600; /* Semi-bold */
+    color: #333; /* Dark text */
+    margin-bottom: 10px; /* Space below the title */
+}
+
+/* Card value styling */
 .stat p {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #ff6b6b;
+    font-size: 24px; /* Larger text for the value */
+    font-weight: 700; /* Bold */
+    color: #007bff; /* Blue color for emphasis */
+    margin: 0; /* Remove default margin */
 }
 
-/* Menu Bar */
-#menu-bar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    z-index: 2; /* Menu appears above the prediction circle */
-}
-
-#menu-bar button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #f7f7f7;
-    color: #333;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-#menu-bar button.active {
-    background-color: #ff6b6b;
-    color: white;
-}
-
-#menu-bar button:hover {
-    background-color: #ff4c4c;
-    color: white;
+@media (max-width: 600px) {
+    .stats-grid {
+    grid-template-columns: 1fr; /* Single column on small screens */
+    }
 }

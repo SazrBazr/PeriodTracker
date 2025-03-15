@@ -1,9 +1,9 @@
 // main.js
-import { auth, db } from './firebaseConfig.js';
+import { auth } from './firebaseConfig.js';
 import { login, signup, logout, onAuthChanged, checkEmailExists } from './auth.js';
-import { getUserData, setUserData, addCycleData, addSymptomData, getCycleHistory, getCycleHistoryWithId, getUserIdByEmail, sendInvitation, updateInvitationStatus, updateUserPartner, getPendingInvitations } from './firestore.js';
-import { showDashboard, showAuth, renderCycleHistory, renderInvitations, showPrediction, showCycleStats, showNutritionTips, updateUi } from './ui.js';
-import { predictNextPeriod, calculateCycleStats, getCurrentCyclePhase, getNutritionTips, calculateAveragePeriodLength, calculateCycleLength } from './utils.js';
+import { getUserData, setUserData, addCycleData, addSymptomData, getCycleHistory, getCycleHistoryWithId, getUserIdByEmail, sendInvitation, updateInvitationStatus, updateUserPartner } from './firestore.js';
+import { showDashboard, showAuth, renderCycleHistory, updateUi, showLoadingSpinner, hideLoadingSpinner } from './ui.js';
+import { predictNextPeriod, calculateAveragePeriodLength, calculateCycleLength } from './utils.js';
 import { updateDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
 
@@ -29,11 +29,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.getElementById('close-modal-btn');
     const showSignup = document.getElementById('show-signup');
     const showLogin = document.getElementById('show-login');
-    const invitationsList = document.getElementById('invitations-list');
+    const infoIcons = document.querySelectorAll('.info');
 
     let clickedDate = new Date().toISOString().split('T')[0];
 
     showDayDetails(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
+
+    // Add click event listener to each info icon
+    infoIcons.forEach((icon) => {
+        icon.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevent event bubbling
+        const stat = icon.closest('.stat'); // Find the closest parent stat container
+        stat.classList.toggle('active'); // Toggle the active class
+        });
+    });
+
+    // Close tooltips when clicking outside
+    document.addEventListener('click', () => {
+        infoIcons.forEach((icon) => {
+        const stat = icon.closest('.stat');
+        stat.classList.remove('active');
+        });
+    });
+
 
     // Function to render the calendar
     async function renderCalendar(year = null, month = null) {
@@ -188,25 +206,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to show day details
     function showDayDetails(year, month, day) {
+        const user = auth.currentUser;
+        if(!user) return;
+        userData = user.getUserData(user.uid);
+        if(userData.gender === 'Male') {
+            document.getElementById('day-details').style.display = 'none';
+            return;
+        }
+        showLoadingSpinner();
         clickedDate = new Date(year, month, day).toISOString().split('T')[0];
         const selectedDate = new Date(year, month, day).toISOString().split('T')[0];
         document.getElementById('selected-date').textContent = selectedDate;
         document.getElementById('day-details').style.display = 'block';
+        hideLoadingSpinner();
     }
 
     // Toggle between login and signup forms
     showSignup.addEventListener('click', () => {
         loginForm.style.display = 'none';
         signupForm.style.display = 'block';
+        hideLoadingSpinner();
     });
 
     showLogin.addEventListener('click', () => {
         signupForm.style.display = 'none';
         loginForm.style.display = 'block';
+        hideLoadingSpinner();
     });
 
     // Event Listeners
     loginBtn.addEventListener('click', async () => {
+        showLoadingSpinner();
         const email = loginEmail.value.trim();
         const password = loginPassword.value.trim();
 
@@ -214,7 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please enter both email and password.');
             return;
         }
-
         await updateUi();
         await renderCalendar();
         
@@ -269,6 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        showLoadingSpinner();
         try {
             const user = await signup(email, password);
             await setUserData(user.uid, {
@@ -283,16 +313,17 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             alert(error.message);
         }
+        hideLoadingSpinner();
     });
 
     logoutBtn.addEventListener('click', async () => {
+        showLoadingSpinner();
         try {
             await logout();
-            alert('You have been logged out.');
-            window.location.href = 'http://127.0.0.1:5500/index.html';
         } catch (error) {
             alert(error.message);
         }
+        hideLoadingSpinner();
     });
 
     startPeriodBtn.addEventListener('click', async () => {

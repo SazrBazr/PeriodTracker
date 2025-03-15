@@ -58,7 +58,7 @@ export function calculateCycleLength(cycles) {
         totalDays += diffDays;
     }
 
-    return Math.round(totalDays / (cycles.length - 1));
+    return Math.round(totalDays / (cycles.length - 1)) - 1;
 }
 
 export function calculateAveragePeriodLength(cycles) {
