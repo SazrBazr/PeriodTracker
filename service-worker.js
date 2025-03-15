@@ -3,10 +3,10 @@ self.addEventListener('install', (event) => {
         caches.open('app-cache').then((cache) => {
             return cache.addAll([
                 '/',
-                '/index.html',
-                '/styles.css',
-                '/main.js',
-                '/icons/AppIcon128.png'
+                'index.html',
+                'styles.css',
+                'main.js',
+                'icons/AppIcon128.png'
             ]);
         })
     );
