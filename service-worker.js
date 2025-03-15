@@ -6,7 +6,7 @@ self.addEventListener('install', (event) => {
                 '/index.html',
                 '/styles.css',
                 '/main.js',
-                '/icons/appIcon128.png'
+                '/icons/AppIcon128.png'
             ]);
         })
     );
