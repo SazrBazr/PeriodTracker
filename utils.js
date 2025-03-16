@@ -44,6 +44,35 @@ export function calculateCycleStats(cycles) {
     };
 }
 
+export function calculateOvulationWindow(cycles){
+    // Predict next period start date
+    const nextPeriodStartDate = new Date();
+    nextPeriodStartDate.setDate(new Date().getDate() + predictNextPeriod(cycles));
+
+    // Calculate ovulation date (typically 14 days before next period)
+    const ovulationDate = new Date(nextPeriodStartDate);
+    ovulationDate.setDate(nextPeriodStartDate.getDate() - 14);
+
+    // Calculate ovulation window (2 days before and after ovulation)
+    const ovulationWindowStartDate = new Date(ovulationDate);
+    const ovulationWindowEndDate = new Date(ovulationDate);
+    ovulationWindowStartDate.setDate(ovulationDate.getDate() - 2);
+    ovulationWindowEndDate.setDate(ovulationDate.getDate() + 2);
+
+    // Calculate fertile window (5 days before ovulation and 1 day after)
+    const fertileWindowStartDate = new Date(ovulationDate);
+    const fertileWindowEndDate = new Date(ovulationDate);
+    fertileWindowStartDate.setDate(ovulationDate.getDate() - 5);
+    fertileWindowEndDate.setDate(ovulationDate.getDate() + 1);
+
+    return{
+        ovStartDate: ovulationWindowStartDate,
+        ovEndDate: ovulationWindowEndDate,
+        ferStartDate: fertileWindowStartDate,
+        ferEndDate: fertileWindowEndDate
+    };
+}
+
 export function calculateCycleLength(cycles) {
     if (cycles.length < 2) {
         return "Not enough data to calculate cycle length.";
