@@ -2,7 +2,7 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open('period-tracker-cache').then(async (cache) => {
             const urlsToCache = [
-                '',
+                '/',
                 'index.html',
                 'styles.css',
                 'main.js',
