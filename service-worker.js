@@ -5,7 +5,7 @@ self.addEventListener('install', (event) => {
                 '/PeriodTracker/index.html',  // Explicitly reference index.html
                 '/PeriodTracker/styles.css',
                 '/PeriodTracker/main.js',
-                '/PeriodTracker/icons/AppIcon192.png'
+                '/PeriodTracker/icons/AppIcon128.png'
             ];
             
             for (const url of urlsToCache) {
