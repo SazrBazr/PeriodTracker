@@ -14,55 +14,48 @@ body {
 }
 
 .calendar-day {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
+    padding: 20px 5px;
+    text-align: center;
     align-items: center;
+    justify-content: center;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 20px;
+    position: relative; /* Added to support absolute positioning of dots */
 }
 
 .today {
-    border: 2px solid blue;
+    border: 2px solid rgb(255, 0, 0);
 }
-
-/* .period {
-    background-color: rgba(255, 0, 0, 0.2);
-}
-
-.fertile {
-    background-color: rgba(0, 255, 0, 0.2);
-}
-
-.symptomsCell {
-    background-color: rgba(255, 255, 0, 0.2);
-} */
 
 .indicators {
-    position: absolute;
-    bottom: 3px;
     display: flex;
-    gap: 3px;
+    justify-content: center;
+    align-items: center;
+    position: absolute; /* To keep the dots inside the cell */
+    bottom: 8px; /* Adjust to avoid clipping */
+    z-index: 10; /* Keep it on top of text */
+    width: 100%;
+    left: 0;
 }
 
-.dot {
-    width: 6px;
-    height: 6px;
+.indicators span.dot {
+    width: 10px; /* Adjust size of dots */
+    height: 10px;
     border-radius: 50%;
+    margin: 2px;
 }
 
-.dot.fertile {
+.indicators .fertile {
     background-color: green;
 }
 
-.dot.period {
+.indicators .period {
     background-color: red;
 }
 
-.dot.symptomsCell {
+.indicators .symptomsCell {
     background-color: rgb(255, 0, 255);
 }
 
@@ -246,7 +239,6 @@ button{
 
 #calendar-container {
     margin-bottom: 15px;
-
 }
 
 .calendar-header {
@@ -276,28 +268,19 @@ button{
     border: none;
 }
 
-.calendar-cell:hover {
-    background-color: #ff6b6b;
+.calendar-day:hover {
+    background-color: #ff9595;
     color: white;
 }
 
-.calendar-cell.active {
-    background-color: #ff0000;
+.calendar-day.active {
+    background-color: #ff6b6b;
     color: #fff;
 }
 
-.calendar-cell.disabled {
+.calendar-day.disabled {
     pointer-events: none;
-}
-
-.calendar-cell.pDay {
-    color: white;
-    background-color: #FF6B6B;
-}
-
-.calendar-cell.ovDay {
-    background-color: #00ff7b;
-    color: black;
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 #day-details {
@@ -305,17 +288,6 @@ button{
     padding: 15px;
     background: #f5f5f5;
     border-radius: 10px;
-}
-
-.symptoms {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.symptoms label {
-    font-size: 14px;
 }
 
 #flow {
@@ -425,106 +397,6 @@ button {
 
 #end-period-btn:hover {
     background-color: #e53935;
-}
-
-/* Responsive Design
-@media (max-width: 768px) {
-    .tab-content {
-        padding: 15px;
-    }
-
-    h3 {
-        font-size: 22px;
-    }
-
-    #calendar {
-        height: 200px;
-        font-size: 16px;
-        margin-bottom: 10px;
-    }
-
-    h4 {
-        font-size: 18px;
-    }
-
-    .symptoms label {
-        font-size: 14px;
-    }
-
-    #flow {
-        font-size: 14px;
-    }
-
-    button {
-        font-size: 14px;
-        padding: 8px 16px;
-    }
-} */
-
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.hamburger {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-}
-
-.hamburger .line {
-    width: 25px;
-    height: 3px;
-    background-color: #FF6B6B;
-    margin: 4px 0;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
-    z-index: 2;
-}
-
-.nav-links li {
-    margin-left: 20px;
-}
-
-.nav-links a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 18px;
-}
-
-@media (max-width: 768px) {
-
-    .hamburger {
-        display: flex;
-    }
-
-    .nav-links {
-        position: absolute;
-        top: 60px;
-        right: 0;
-        height: 100%;
-        width: 100%;
-        background-color: #f7f7f7;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        transform: translateX(100%);
-        transition: transform 0.3s ease-in;
-    }
-
-    .nav-links li {
-        margin: 20px 0;
-    }
-
-    .nav-links.active {
-        transform: translateX(0);
-    }
 }
 
 #prediction-circle {

@@ -2,7 +2,7 @@
 import { auth } from './firebaseConfig.js';
 import { login, signup, logout, onAuthChanged, checkEmailExists } from './auth.js';
 import { getUserData, setUserData, checkSymptomsForDate, addCycleData, addSymptomData, getCycleHistory, getCycleHistoryWithId, getUserIdByEmail, sendInvitation, updateUserPartner, getSymptomsHistory } from './firestore.js';
-import { showDashboard, showAuth, renderCycleHistory, updateUi, showLoadingSpinner, hideLoadingSpinner } from './ui.js';
+import { showDashboard, showAuth, renderCycleHistory, updateUi} from './ui.js';
 import { predictNextPeriod, calculateAveragePeriodLength, calculateOvulationWindow } from './utils.js';
 import { updateDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
@@ -56,155 +56,144 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to render the calendar
     async function renderCalendar(year = null, month = null) {
         const calendar = document.getElementById('calendar');
-        calendar.innerHTML = '';
-
+        calendar.innerHTML = ''; // Clear previous calendar
+    
         const today = new Date();
-        const currentYear = year || today.getFullYear();
-        const currentMonth = month || today.getMonth();
-
+        const currentYear = year ?? today.getFullYear();
+        const currentMonth = month ?? today.getMonth();
+    
         const firstDay = new Date(currentYear, currentMonth, 1);
         const lastDay = new Date(currentYear, currentMonth + 1, 0);
         const daysInMonth = lastDay.getDate();
-        const startingDay = firstDay.getDay();
-
+        const startingDay = firstDay.getDay(); // Correct calculation
+    
         // Create calendar header
         const header = document.createElement('div');
         header.className = 'calendar-header';
+    
         const prevMonthBtn = document.createElement('button');
         prevMonthBtn.id = 'prev-month';
         prevMonthBtn.textContent = '←';
-        prevMonthBtn.onclick = () => prevMonth(currentYear, currentMonth);
+        prevMonthBtn.onclick = () => renderCalendar(currentYear, currentMonth - 1);
+    
         const nextMonthBtn = document.createElement('button');
         nextMonthBtn.id = 'next-month';
         nextMonthBtn.textContent = '→';
-        nextMonthBtn.onclick = () => nextMonth(currentYear, currentMonth);
+        nextMonthBtn.onclick = () => renderCalendar(currentYear, currentMonth + 1);
+    
         const monthYear = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(firstDay);
         const monthYearSpan = document.createElement('span');
         monthYearSpan.textContent = monthYear;
+    
         header.appendChild(prevMonthBtn);
         header.appendChild(monthYearSpan);
         header.appendChild(nextMonthBtn);
         calendar.appendChild(header);
-
+    
         // Create calendar grid
         const grid = document.createElement('div');
+        grid.id = 'calendar-grid';
         grid.className = 'calendar-grid';
-
-        // Add empty cells for days before the first day of the month
+    
+        // Add empty cells before the first day
         for (let i = 0; i < startingDay; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'calendar-cell empty';
+            grid.appendChild(emptyCell);
+        }
+    
+        // Add day cells
+        for (let i = 1; i <= daysInMonth; i++) {
             const cell = document.createElement('div');
-            cell.className = 'calendar-cell empty';
+            cell.className = 'calendar-day';
+            if(new Date(currentYear, currentMonth, i) > new Date()){
+                cell.classList.add('disabled');
+            }
+            cell.innerHTML = `<span class="date">${i}</span> <div class="indicators"></div>`;
+    
+            cell.addEventListener('click', () => {
+                document.querySelectorAll('.calendar-day').forEach(cell => cell.classList.remove('active'));
+                cell.classList.add('active');
+                showDayDetails(currentYear, currentMonth, i);
+            });
+    
             grid.appendChild(cell);
         }
-
+    
+        calendar.appendChild(grid);
+        fillCalendar(currentYear, currentMonth); // Call fillCalendar after rendering
+    }
+    
+    // Function to fill the calendar with cycle data
+    async function fillCalendar(currentYear, currentMonth) {
         const user = auth.currentUser;
         if (!user) return;
+    
         const userData = await getUserData(user.uid);
-        let cycles;
+        let cycles = [];
+    
         if (userData.gender === "Female") {
             cycles = await getCycleHistory(user.uid);
         } else if (userData.partner) {
             cycles = await getCycleHistory(userData.partner);
-        } else {
-            cycles = []; // No partner, so no cycles to display
         }
-
+    
         const currentDate = new Date();
-        let expectedPeriodStart = new Date(currentDate);
-        let expectedPeriodEnd;
-        let fertileWindowStartDate;
-        let fertileWindowEndDate;
-        if (cycles.length != 0) {
-            // Predict the start of the next period by adding the result of predictNextPeriod to the current date
-            expectedPeriodStart.setDate(currentDate.getDate() + predictNextPeriod(cycles) - 1);
-
-            // Calculate the end of the period by adding the average period length to the start date
+        let expectedPeriodStart, expectedPeriodEnd, fertileWindowStartDate, fertileWindowEndDate;
+    
+        if (cycles.length > 0) {
+            expectedPeriodStart = new Date(currentDate);
+            expectedPeriodStart.setDate(currentDate.getDate() + predictNextPeriod(cycles));
+    
             expectedPeriodEnd = new Date(expectedPeriodStart);
             expectedPeriodEnd.setDate(expectedPeriodStart.getDate() + calculateAveragePeriodLength(cycles));
-
+    
             const stats = calculateOvulationWindow(cycles);
-
             fertileWindowStartDate = stats['ferStartDate'];
             fertileWindowEndDate = stats['ferEndDate'];
         }
+    
+        document.querySelectorAll('.calendar-day').forEach(async (cell, inedx) => {
+            const cellDate = new Date(currentYear, currentMonth, inedx + 2);
+            const date = cellDate.toISOString().split('T')[0];
 
-        // Add cells for each day of the month without indicators
-        const dayCells = []; // Store the day cells to add indicators later
-        for (let i = 1; i <= daysInMonth; i++) {
-            const date = new Date(currentYear, currentMonth, i + 1);
-            const dateString = date.toISOString().split('T')[0];
-            const isToday = dateString === currentDate.toISOString().split('T')[0];
+            const isToday = date === currentDate.toISOString().split('T')[0];
 
             let isPredictedPeriod = false;
             let isFertile = false;
-            const hasSymptoms = await checkSymptomsForDate(user.uid, dateString);
-
-            const cellDate = new Date(currentYear, currentMonth, i);
-            const cellCheckDate = new Date(currentYear, currentMonth, i + 1);
-
-            if (expectedPeriodStart <= cellCheckDate && cellCheckDate <= expectedPeriodEnd) {
+            const hasSymptoms = await checkSymptomsForDate(user.uid, date);
+    
+            if (expectedPeriodStart && expectedPeriodEnd && expectedPeriodStart.toISOString().split('T')[0] <= date && date <= expectedPeriodEnd.toISOString().split('T')[0]) {
                 isPredictedPeriod = true;
             }
-            if (fertileWindowStartDate <= cellCheckDate && cellCheckDate <= fertileWindowEndDate) {
+            if (fertileWindowStartDate && fertileWindowEndDate && fertileWindowStartDate.toISOString().split('T')[0] <= date && date <= fertileWindowEndDate.toISOString().split('T')[0]) {
                 isFertile = true;
             }
 
-            let dayClasses = ['calendar-day']; // Always start with the base class
-            if (isToday) dayClasses.push('today');
-            if (isPredictedPeriod) dayClasses.push('period');
-            if (isFertile) dayClasses.push('fertile');
-            if (hasSymptoms) dayClasses.push('symptomsCell');
+            if (isToday) cell.classList.add('today');
+            const indicatorsDiv = cell.querySelector('.indicators');
 
-            const cell = document.createElement('div');
-            cell.classList.add(...dayClasses); // Add all classes at once
-
-            // Store the day cell for later dot addition
-            dayCells.push({
-                cell,
-                indicators: {
-                    isPredictedPeriod,
-                    isFertile,
-                    hasSymptoms
-                },
-            });
-
-            cell.innerHTML += `
-                <span class="date">${i}</span>
-            `;
-
-            if (cellDate > today) {
-                //cell.classList.add('disabled'); // Add a class to disable future dates
-            } else {
-                cell.addEventListener('click', () => {
-                    // Remove active class from all cells
-                    document.querySelectorAll('.calendar-cell').forEach(cell => {
-                        cell.classList.remove('active');
-                    });
-                    // Add active class to the clicked cell
-                    cell.classList.add('active');
-                    showDayDetails(currentYear, currentMonth, i + 1);
-                });
+            // Clear previous dots
+            indicatorsDiv.innerHTML = ''; 
+            if (isPredictedPeriod) {
+                const periodDot = document.createElement('span');
+                periodDot.className = 'dot period';
+                indicatorsDiv.appendChild(periodDot);
             }
 
-            grid.appendChild(cell);
-        }
+            if (isFertile) {
+                const fertileDot = document.createElement('span');
+                fertileDot.className = 'dot fertile';
+                indicatorsDiv.appendChild(fertileDot);
+            }
 
-        calendar.appendChild(grid);
-
-        // Add dots gradually (using setTimeout to not block the main thread)
-        dayCells.forEach((dayCell, index) => {
-            setTimeout(() => {
-                const { isPredictedPeriod, isFertile, hasSymptoms } = dayCell.indicators;
-                let indicators = '';
-                if (isPredictedPeriod) indicators += '<span class="dot period"></span>';
-                if (isFertile) indicators += '<span class="dot fertile"></span>';
-                if (hasSymptoms) indicators += '<span class="dot symptomsCell"></span>';
-
-                dayCell.cell.querySelector('.date').insertAdjacentHTML('afterend', `<div class="indicators">${indicators}</div>`);
-            }, index * 100); // 100ms delay between each dot addition
-        });
+            if (hasSymptoms) {
+                const symptomsDot = document.createElement('span');
+                symptomsDot.className = 'dot symptomsCell';
+                indicatorsDiv.appendChild(symptomsDot);
+            }
+        });        
     }
-
 
     // Add event listeners for prev/next month buttons
     async function prevMonth(year, month) {
@@ -233,30 +222,25 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('day-details').style.display = 'none';
             return;
         }
-        showLoadingSpinner();
-        clickedDate = new Date(year, month, day).toISOString().split('T')[0];
-        const selectedDate = new Date(year, month, day).toISOString().split('T')[0];
+        clickedDate = new Date(year, month, day + 1).toISOString().split('T')[0];
+        const selectedDate = new Date(year, month, day + 1).toISOString().split('T')[0];
         document.getElementById('selected-date').textContent = selectedDate;
         document.getElementById('day-details').style.display = 'block';
-        hideLoadingSpinner();
     }
 
     // Toggle between login and signup forms
     showSignup.addEventListener('click', () => {
         loginForm.style.display = 'none';
         signupForm.style.display = 'block';
-        hideLoadingSpinner();
     });
 
     showLogin.addEventListener('click', () => {
         signupForm.style.display = 'none';
         loginForm.style.display = 'block';
-        hideLoadingSpinner();
     });
 
     // Event Listeners
     loginBtn.addEventListener('click', async () => {
-        showLoadingSpinner();
         const email = loginEmail.value.trim();
         const password = loginPassword.value.trim();
 
@@ -318,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        showLoadingSpinner();
         try {
             const user = await signup(email, password);
             await setUserData(user.uid, {
@@ -333,17 +316,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             alert(error.message);
         }
-        hideLoadingSpinner();
     });
 
     logoutBtn.addEventListener('click', async () => {
-        showLoadingSpinner();
         try {
             await logout();
         } catch (error) {
             alert(error.message);
         }
-        hideLoadingSpinner();
     });
 
     startPeriodBtn.addEventListener('click', async () => {
@@ -511,7 +491,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render the calendar
     async function renderCalendar(year = null, month = null) {
-        showLoadingSpinner(); // Show loading spinner while rendering
         const calendar = document.getElementById('calendar');
         calendar.innerHTML = ''; // Clear previous calendar
 
@@ -556,7 +535,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const user = auth.currentUser;
         if (!user) {
-            hideLoadingSpinner(); // Hide spinner if user is not logged in
             return;
         }
 
@@ -638,23 +616,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         calendar.appendChild(grid);
-        hideLoadingSpinner(); // Hide loading spinner when rendering is complete
-    }
-
-    // Hide loading spinner
-    function hideLoadingSpinner() {
-        const spinner = document.getElementById('loading-spinner');
-        if (spinner) {
-            spinner.style.display = 'none';
-        }
-    }
-
-    // Show loading spinner
-    function showLoadingSpinner() {
-        const spinner = document.getElementById('loading-spinner');
-        if (spinner) {
-            spinner.style.display = 'block';
-        }
     }
 
     // Check if symptoms exist for the given date
@@ -701,30 +662,25 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('day-details').style.display = 'none';
             return;
         }
-        showLoadingSpinner();
         clickedDate = new Date(year, month, day).toISOString().split('T')[0];
         const selectedDate = new Date(year, month, day).toISOString().split('T')[0];
         document.getElementById('selected-date').textContent = selectedDate;
         document.getElementById('day-details').style.display = 'block';
-        hideLoadingSpinner();
     }
 
     // Toggle between login and signup forms
     showSignup.addEventListener('click', () => {
         loginForm.style.display = 'none';
         signupForm.style.display = 'block';
-        hideLoadingSpinner();
     });
 
     showLogin.addEventListener('click', () => {
         signupForm.style.display = 'none';
         loginForm.style.display = 'block';
-        hideLoadingSpinner();
     });
 
     // Login event listener
     loginBtn.addEventListener('click', async () => {
-        showLoadingSpinner();
         const email = loginEmail.value.trim();
         const password = loginPassword.value.trim();
 
@@ -737,9 +693,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const user = await login(email, password);
             const userDoc = await getUserData(user.uid);
             if (userDoc) {
-                if (userDoc.partner) {
-                    renderCalendar();
-                }
                 showDashboard();
             }
         } catch (error) {
@@ -751,7 +704,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Signup event listener
     signupBtn.addEventListener('click', async () => {
-        showLoadingSpinner();
         const email = signupEmail.value.trim();
         const password = signupPassword.value.trim();
         const confirmPassword = signupConfirmPassword.value.trim();

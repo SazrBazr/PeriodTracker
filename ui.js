@@ -3,29 +3,16 @@ import {getUserData, getCycleHistory, getSymptomsHistory, updateInvitationStatus
 import { auth } from './firebaseConfig.js';
 import { predictNextPeriod, calculateCycleStats, getCurrentCyclePhase, getNutritionTips } from './utils.js';
 
-export function showLoadingSpinner() {
-    document.getElementById('loading-spinner').style.display = 'flex';
-}
-
-// Function to hide the loading spinner
-export function hideLoadingSpinner() {
-    document.getElementById('loading-spinner').style.display = 'none';
-}
-
-
 export function showDashboard(userData) {
-    showLoadingSpinner();
     document.getElementById('auth-container').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('username').textContent = userData.username;
     document.body.classList.add(userData.gender);
-    hideLoadingSpinner();
 }
 
 export function showAuth() {
     document.getElementById('auth-container').style.display = 'block';
     document.getElementById('dashboard').style.display = 'none';
-    hideLoadingSpinner();
 }
 
 export function renderCycleHistory(cycles) {
