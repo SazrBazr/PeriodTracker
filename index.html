@@ -247,7 +247,7 @@
   <script type="module" src="main.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('https://github.com/SazrBazr/PeriodTracker/blob/5c818e231f4f33e8791fb11d6ec0911dc5788fb5/service-worker.js')
+        navigator.serviceWorker.register('/PeriodTracker/service-worker.js')
             .then(() => console.log("Service Worker Registered"))
             .catch(err => console.error("Service Worker Registration Failed:", err));
     }
