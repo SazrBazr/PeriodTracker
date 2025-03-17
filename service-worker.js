@@ -2,12 +2,12 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open('period-tracker-cache').then(async (cache) => {
             const urlsToCache = [
-                '/',
-                'index.html',
-                'styles.css',
-                'main.js',
-                'icons/AppIcon192.png'
+                '/PeriodTracker/index.html',  // Explicitly reference index.html
+                '/PeriodTracker/styles.css',
+                '/PeriodTracker/main.js',
+                '/PeriodTracker/icons/AppIcon192.png'
             ];
+            
             for (const url of urlsToCache) {
                 try {
                     await cache.add(url);
@@ -19,6 +19,7 @@ self.addEventListener('install', (event) => {
     );
 });
 
+// Fetch event to serve files from cache if available
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request).then((response) => {
