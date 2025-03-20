@@ -14,6 +14,19 @@
   <script src="https://kit.fontawesome.com/f593e83418.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <script type="module">
+    import { determineBrowser } from './utils.js';
+    import { fetchData } from './scheduler.js';
+    import { saveToStorage, getFromStorage } from './crossbrowser.js';
+
+    // Example usage
+    determineBrowser();
+    fetchData();
+
+    saveToStorage('testKey', { name: 'John' });
+    const data = getFromStorage('testKey');
+    console.log('Retrieved data:', data);
+  </script>
   <div id="app">
     <!-- Auth Container -->
     <div id="auth-container">
@@ -56,18 +69,42 @@
     <div id="dashboard" style="display: none;">
       <header>
         <h2>Welcome, <span id="username"></span>!</h2>
+        <button id="settings-btn">Settings</button>
         <button id="logout-btn">Logout</button>
       </header>
 
+      <!-- Settings Section -->
+      <div id="settings-section" style="display: none;">
+        <h2>Settings</h2>
+        <form id="settings-form">
+          <label for="settings-username">Username</label>
+          <input type="text" id="settings-username" placeholder="Username">
+
+          <label for="settings-gender">Gender</label>
+          <select id="settings-gender">
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+          </select>
+
+          <label for="settings-avg-cycle-length">Average Cycle Length (days)</label>
+          <input type="number" id="settings-avg-cycle-length" placeholder="Average Cycle Length">
+
+          <label for="settings-avg-period-length">Average Period Length (days)</label>
+          <input type="number" id="settings-avg-period-length" placeholder="Average Period Length">
+
+          <button type="submit">Save Changes</button>
+        </form>
+      </div>
+
+      <!-- Prediction Circle -->
+      <div id="prediction-circle">
+        <h3>Your Period is in</h3>
+        <div id="days-until-period">?</div>
+        <p>days</p>
+      </div>
       <!-- Wrap the existing sections in tab containers -->
       <div id="dashboard-tab" class="tab-content active">
-        <!-- Prediction Circle -->
-        <div id="prediction-circle">
-          <h3>Your Period is in</h3>
-          <div id="days-until-period">?</div>
-          <p>days</p>
-        </div>
-        <div id="female-only" class="female-only" style="display: none;">
+        <div id="female-only" class="female-only dashboard-without-circle" style="display: none;">
           <section id="invitations-section" class="sharing" style="display: none;">
             <h3>Share With Your Partner</h3>
             <div class="messageBox">
@@ -93,7 +130,7 @@
           <h3>Nutrition Tips</h3>
           <section class="nutrition-tips">
             <div id="nutrition-tips-content">
-                <p>No enough data</p>
+              Maintain a balanced diet with whole foods, lean proteins, and plenty of vegetables.
             </div>  
           </section>
         </div>
@@ -101,17 +138,17 @@
         <!-- Shared content for both genders -->
         <section id="invitations-section" class="sharing">
           <h3>Invitations</h3>
-          <ul id="invitations-list"></ul>
+          <ul id="invitations-list">There is no invitations waiting for you</ul>
         </section>
 
         <section class="history">
           <div>
             <h3>Symptoms History</h3>
-            <ul id="symptoms-history"></ul>
+            <ul id="symptoms-history">No data yet!</ul>
           </div>
           <div>
             <h3>Cycle History</h3>
-            <ul id="cycle-history"></ul>
+            <ul id="cycle-history">No data yet!</ul>
           </div>
         </section>
       </div>

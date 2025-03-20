@@ -3,12 +3,27 @@ import { db } from './firebaseConfig.js';
 import { collection, query, orderBy, getDocs, getDoc, addDoc, doc, setDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
 export async function getUserData(uid) {
-    const userDoc = await getDoc(doc(db, 'users', uid));
-    return userDoc.data();
+    try {
+        const userDoc = await getDoc(doc(db, 'users', uid));
+        if (userDoc.exists()) {
+            return userDoc.data(); // Return user data if the document exists
+        } else {
+            console.error("User document does not exist.");
+            return null; // Return null if the document doesn't exist
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        return null; // Return null if there's an error
+    }
 }
 
 export async function setUserData(uid, data) {
     await setDoc(doc(db, 'users', uid), data);
+}
+
+export async function updateUserData(uid, data){
+    const userRef = doc(firestore, 'users', userId);
+    await updateDoc(userRef, data);
 }
 
 export async function addCycleData(uid, data) {

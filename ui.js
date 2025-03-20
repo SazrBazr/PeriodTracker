@@ -4,6 +4,10 @@ import { auth } from './firebaseConfig.js';
 import { predictNextPeriod, calculateCycleStats, getCurrentCyclePhase, getNutritionTips } from './utils.js';
 
 export function showDashboard(userData) {
+    if (!userData) {
+        console.error("User data is null or undefined.");
+        return; // Exit the function if userData is null
+    }
     document.getElementById('auth-container').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('username').textContent = userData.username;
@@ -17,8 +21,8 @@ export function showAuth() {
 
 export function renderCycleHistory(cycles) {
     const cycleHistory = document.getElementById('cycle-history');
-    cycleHistory.innerHTML = '';
     let counter = 0;
+    if(cycles.length != 0) cycleHistory.innerHTML = '';
     cycles.forEach(cycle => {
         counter++;
         if(counter >= 4){
@@ -59,12 +63,20 @@ export async function updateUi() {
     const user = auth.currentUser;
     if (!user) return;
 
-    const symptoms = await getSymptomsHistory(user.uid);
+    const userData = await getUserData(user.uid);
+    document.getElementById('username').textContent = userData.username || 'User';
+
     const invitations = await getPendingInvitations(user.uid);
-    const userData = await getUserData(user.uid); // Ensure this is awaited
-    console.log("User Data:", userData); // Log user data
+    let symptoms;
+    if(userData.gender === "Female"){
+        symptoms = await getSymptomsHistory(user.uid);
+    }
+    else{
+        symptoms = await getSymptomsHistory(userData.partner);
+    }
 
     let cycles;
+    if(!userData) return;
     if (userData.gender === "Female") {
         cycles = await getCycleHistory(user.uid);
     } else if (userData.partner) {
@@ -75,18 +87,22 @@ export async function updateUi() {
 
     console.log("Cycles:", cycles); // Log cycles
 
-    if (invitations) {
+    if (invitations.length > 0) {
         renderInvitations(invitations);
     }
     if (cycles.length > 0) { // Ensure cycles is not empty
         renderCycleHistory(cycles);
         showPrediction(predictNextPeriod(cycles));
         showCycleStats(calculateCycleStats(cycles));
-        showNutritionTips(getNutritionTips(getCurrentCyclePhase(cycles)));
+        const phase = getCurrentCyclePhase(cycles);
+        console.log("Detected cycle phase:", phase);
+        const tips = getNutritionTips(phase);
+        console.log("Nutrition tips:", tips);
+        showNutritionTips(tips);
     } else {
         console.log("No cycles found for the user."); // Log if cycles are empty
     }
-    if (symptoms) {
+    if (symptoms.length > 0) {
         renderSymptomsHistory(symptoms);
     }
 }
@@ -167,5 +183,28 @@ export function showCycleStats(stats) {
 }
 
 export function showNutritionTips(tips) {
-    document.getElementById('nutrition-tips-content').textContent = tips;
+    const tipsContainer = document.getElementById('nutrition-tips-content');
+    let currentIndex = 0;
+
+    // Function to update the displayed tip
+    function displayNextTip() {
+        if (currentIndex < tips.length) {
+            tipsContainer.innerHTML = `<p>${tips[currentIndex]}</p>`;
+            currentIndex++;
+        } else {
+            // Reset to the first tip if the end is reached
+            currentIndex = 0;
+            tipsContainer.innerHTML = `<p>${tips[currentIndex]}</p>`;
+            currentIndex++;
+        }
+    }
+
+    // Display the first tip immediately
+    displayNextTip();
+
+    // Set up auto-scroll every 10 seconds
+    const intervalId = setInterval(displayNextTip, 10000);
+
+    // Optional: Clear the interval when needed (e.g., when leaving the page)
+    return intervalId;
 }

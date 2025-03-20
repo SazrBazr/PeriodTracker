@@ -1,4 +1,10 @@
 // utils.js
+import { crossbrowserName } from './constants.js';
+
+export function determineBrowser() {
+    console.log('Running on:', crossbrowserName);
+}
+
 export function predictNextPeriod(cycles) {
     console.log("Cycles in predictNextPeriod:", cycles); // Log cycles
     if (cycles.length < 2) {
@@ -120,6 +126,10 @@ export function calculateAveragePeriodLength(cycles) {
     }
 }
 
+export function getRecentSymptoms(symptoms){
+    
+}
+
 export function getCurrentCyclePhase(cycles) {
     if (cycles.length < 1) {
         return "Not enough data to determine cycle phase.";
@@ -148,10 +158,35 @@ export function getCurrentCyclePhase(cycles) {
 
 export function getNutritionTips(cyclePhase) {
     const nutritionTips = {
-        follicular: "Focus on iron-rich foods like spinach and lean meats.",
-        ovulation: "Increase intake of omega-3 fatty acids like salmon and flaxseeds.",
-        luteal: "Eat magnesium-rich foods like nuts and dark chocolate.",
-        menstrual: "Stay hydrated and consume calcium-rich foods like yogurt."
+        follicular: [
+            "Focus on iron-rich foods like spinach, lentils, and lean red meat.",
+            "Add vitamin C-rich foods (oranges, bell peppers) to enhance iron absorption.",
+            "Incorporate whole grains like quinoa and oats for energy.",
+            "Include probiotic-rich foods like yogurt and kefir for gut health.",
+            "Start introducing complex carbohydrates to support energy levels."
+        ],
+        ovulation: [
+            "Increase intake of omega-3 fatty acids (salmon, chia seeds, walnuts).",
+            "Add antioxidant-rich foods like berries and dark leafy greens.",
+            "Include zinc sources like pumpkin seeds and chickpeas.",
+            "Stay hydrated with water and herbal teas.",
+            "Focus on fiber-rich foods like vegetables and whole grains."
+        ],
+        luteal: [
+            "Eat magnesium-rich foods like almonds, spinach, and dark chocolate.",
+            "Include complex carbs like sweet potatoes and brown rice for stable energy.",
+            "Boost vitamin B6 with foods like bananas, sunflower seeds, and poultry.",
+            "Reduce bloating with potassium-rich foods like avocados and coconut water.",
+            "Incorporate calming herbal teas like chamomile or peppermint."
+        ],
+        menstrual: [
+            "Replenish iron with foods like red meat, lentils, and fortified cereals.",
+            "Increase calcium intake with yogurt, leafy greens, or fortified plant milk.",
+            "Add vitamin E sources like almonds, sunflower seeds, and spinach.",
+            "Include anti-inflammatory foods like ginger, turmeric, and fatty fish.",
+            "Stay hydrated with warm liquids like herbal teas and broths."
+        ]
     };
-    return nutritionTips[cyclePhase] || "No specific tips for this phase.";
+
+    return nutritionTips[cyclePhase.toLowerCase()] || ["Maintain a balanced diet with whole foods, lean proteins, and plenty of vegetables."];
 }

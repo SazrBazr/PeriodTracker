@@ -1,3 +1,9 @@
+:root {
+    --accent-color: #ce83a7;
+    --accent-dark-color: #ce5790;
+
+}
+
 /* General Styles */
 * {
     margin: 0;
@@ -13,6 +19,43 @@ body {
     padding: 20px;
 }
 
+#settings-section {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+#settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#settings-form label {
+    font-weight: bold;
+}
+
+#settings-form input, #settings-form select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#settings-form button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#settings-form button:hover {
+    background-color: #0056b3;
+}
+
 .calendar-day {
     padding: 20px 5px;
     text-align: center;
@@ -26,7 +69,7 @@ body {
 }
 
 .today {
-    border: 2px solid rgb(255, 0, 0);
+    border: 2px solid var(--accent-dark-color);
 }
 
 .indicators {
@@ -105,10 +148,10 @@ label{
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    border: 2px solid #ff6b6b;
+    border: 2px solid var(--accent-color);
 }
 .messageBox:focus-within {
-    border: 3px solid  #e94b4b;
+    border: 3px solid var(--accent-dark-color);
 }
 #messageInput {
     margin-left: 10px;
@@ -121,7 +164,7 @@ label{
 }
 #messageInput:focus ~ #sendButton svg path,
 #messageInput:valid ~ #sendButton svg path {
-    stroke: #e94b4b;
+    stroke: var(--accent-dark-color);
 }
 
 #sendButton {
@@ -143,7 +186,7 @@ label{
     transition: all 0.3s;
 }
 #sendButton:hover svg path {
-    stroke: #e94b4b;
+    stroke: var(--accent-dark-color);
 }
 
 .btn-container{
@@ -221,7 +264,7 @@ label{
 }
 
 button{
-    background-color: #ff6b6b;
+    background-color: var(--accent-color);
     padding: 10px;
     border-radius: 5px;
     color: white;
@@ -269,12 +312,12 @@ button{
 }
 
 .calendar-day:hover {
-    background-color: #ff9595;
+    background-color: var(--accent-color);
     color: white;
 }
 
 .calendar-day.active {
-    background-color: #ff6b6b;
+    background-color: var(--accent-dark-color);
     color: #fff;
 }
 
@@ -304,7 +347,7 @@ button{
 }
 
 #flow:focus {
-    border-color: #FF6B6B; /* Highlight border on focus */
+    border-color: var(--accent-dark-color); /* Highlight border on focus */
     outline: none; /* Remove default outline */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow */
 }
@@ -367,6 +410,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    background-color: var(--accent-color);
 }
 
 #save-day-btn {
@@ -401,9 +445,13 @@ button {
 
 #prediction-circle {
     text-align: center;
-    margin: 20px auto;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 10px;
+    margin-bottom: -110px;
     padding: 20px;
-    background-color: #ff6b6b;
+    background-color: var(--accent-color);
+    outline: 20px solid #f7f7f7; /* Outer border effect */
     color: white;
     border-radius: 50%;
     width: 200px;
@@ -412,9 +460,9 @@ button {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     z-index: 1; /* Ensures the prediction circle is below the menu */
 }
+
 
 #prediction-circle h3 {
     font-size: 1rem;
@@ -504,9 +552,9 @@ input[type=radio]:checked + label:after {
 
 #app {
     margin: 0 auto;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* background: #fff; */
+    /* border-radius: 10px; */
+    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
     overflow: hidden;
 }
 
@@ -535,14 +583,14 @@ input[type=radio]:checked + label:after {
     margin: 5px 0;
     border: none;
     border-radius: 5px;
-    background-color: #ff6b6b;
+    background-color: var(--accent-color);
     color: white;
     font-size: 1rem;
     cursor: pointer;
 }
 
 #auth-container button:hover {
-    background-color: #ff4c4c;
+    background-color: var(--accent-dark-color);
 }
 
 /* Dashboard */
@@ -558,13 +606,17 @@ header {
     margin-bottom: 20px;
 }
 
+#dashboard-tab{
+   padding-top: 150px; 
+}
+
 header h2 {
     font-size: 1.5rem;
 }
 
 #logout-btn {
-    padding: 5px 10px;
-    background-color: #ff6b6b;
+    padding: 10px 15px;
+    background-color: var(--accent-color);
     color: white;
     border: none;
     border-radius: 5px;
@@ -572,7 +624,7 @@ header h2 {
 }
 
 #logout-btn:hover {
-    background-color: #ff4c4c;
+    background-color: var(--accent-dark-color);
 }
 
 /* Female-only content */
@@ -610,7 +662,7 @@ body.male .female-only {
 #save-period-btn {
     width: 100%;
     padding: 10px;
-    background-color: #ff6b6b;
+    background-color: var(--accent-color);
     color: white;
     border: none;
     border-radius: 5px;
@@ -635,15 +687,6 @@ body.male .female-only {
     border-radius: 5px;
 }
 
-
-/* Loading Indicator */
-#loading {
-    text-align: center;
-    padding: 20px;
-    font-size: 1.2rem;
-    color: #ff6b6b;
-}
-
 .cycle-analysis, .symptom-tracking, .nutrition-tips {
     margin-bottom: 20px;
     padding: 15px;
@@ -657,7 +700,7 @@ body.male .female-only {
 
 #save-symptoms-btn {
     padding: 10px;
-    background-color: #ff6b6b;
+    background-color: var(--accent-color);
     color: white;
     border: none;
     border-radius: 5px;
