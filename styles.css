@@ -45,7 +45,7 @@ body {
 
 #settings-form button {
     padding: 10px;
-    background-color: #007bff;
+    background-color: var(--accent-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -53,7 +53,11 @@ body {
 }
 
 #settings-form button:hover {
-    background-color: #0056b3;
+    background-color: var(--accent-dark-color);
+}
+
+#settings-btn{
+    margin-right: 10px;
 }
 
 .calendar-day {

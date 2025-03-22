@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle settings section
     settingsBtn.addEventListener('click', () => {
         settingsSection.style.display = settingsSection.style.display === 'none' ? 'block' : 'none';
+        document.getElementById('dash-data').style.display = document.getElementById('dash-data').style.display === 'none' ? 'block' : 'none';
     });
 
     // Handle settings form submission
@@ -226,9 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
             else{
                 hasSymptoms = await checkSymptomsForDate(userData.partner, date);
             }
-    
+            
             if (expectedPeriodStart && expectedPeriodEnd && expectedPeriodStart.toISOString().split('T')[0] <= date && date <= expectedPeriodEnd.toISOString().split('T')[0]) {
-                isPredictedPeriod = true;
+                if(predictNextPeriod(cycles) != -1){
+                    isPredictedPeriod = true;
+                }
             }
             if (fertileWindowStartDate && fertileWindowEndDate && fertileWindowStartDate.toISOString().split('T')[0] <= date && date <= fertileWindowEndDate.toISOString().split('T')[0]) {
                 isFertile = true;
@@ -391,7 +394,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Period started on ' + clickedDate);
             }
         }
-    
         updateUi();
     });
 

@@ -8,14 +8,14 @@ export function determineBrowser() {
 export function predictNextPeriod(cycles) {
     console.log("Cycles in predictNextPeriod:", cycles); // Log cycles
     if (cycles.length < 2) {
-        return "Not enough data to predict.";
+        return -1;
     }
 
     const averageCycleLength = calculateCycleLength(cycles);
     const lastPeriodEnd = new Date(cycles[0].endDate);
 
     if (cycles[0].endDate === null || lastPeriodEnd === null) {
-        return "now!";
+        return 0;
     }
 
     const nextPeriodStart = new Date(lastPeriodEnd);
