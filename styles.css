@@ -1,8 +1,146 @@
+/* Updated CSS */
 :root {
     --accent-color: #ce83a7;
     --accent-dark-color: #ce5790;
-
+    --primary-color: #FF7EB6;
+    --secondary-color: #FF65A3;
+    --background-color: #FFF9FB;
+    --text-color: #2E2E2E;
+    --card-bg: #FFFFFF;
+    --shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
+
+/* Enhanced Prediction Circle */
+#prediction-circle {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    box-shadow: 0 10px 30px rgba(255, 126, 182, 0.3);
+    width: 180px;
+    height: 180px;
+    margin: -90px auto 30px;
+}
+
+/* Improved Input Fields */
+input, select {
+    width: 100%;
+    padding: 12px 20px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    margin: 8px 0;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* Modern Button Styles */
+button {
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+#save-day-btn {
+    background: linear-gradient(135deg, #FF9A9E, #FF7EB6);
+}
+
+#start-period-btn {
+    background: linear-gradient(135deg, #7FD8BE, #5DC9A8);
+}
+
+#end-period-btn {
+    background: linear-gradient(135deg, #FF7676, #FF6565);
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+    #dashboard {
+        padding-bottom: 80px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .symptoms {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Hover Effects */
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Loading Spinner Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Improved Settings Modal */
+#settings-section {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    z-index: 1001;
+    background: var(--card-bg);
+    border-radius: 20px;
+}
+
+/* Overlay Effect */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+/* Modern Radio Buttons */
+.gender input[type="radio"] + label {
+    padding: 12px 20px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.gender input[type="radio"]:checked + label {
+    border-color: var(--primary-color);
+    background: rgba(255,126,182,0.1);
+}
+
+/* Enhanced Stats Cards */
+.stat {
+    padding: 25px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.stat h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.stat p {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+
+
+
+
+
 
 /* General Styles */
 * {
@@ -95,17 +233,51 @@ body {
 }
 
 .indicators .fertile {
-    background-color: green;
+    background-color: #00897B;
 }
 
 .indicators .period {
-    background-color: red;
+    background-color: #D32F2F;
 }
 
 .indicators .symptomsCell {
-    background-color: rgb(255, 0, 255);
+    background-color: #7E57C2;
 }
 
+.keyMap {
+    display: flex; /* Use flexbox to keep dots and text aligned */
+    flex-direction: column;
+    gap: 5px; /* Adjust spacing between items */
+}
+
+.keyItem {
+    display: flex;
+    align-items: center; /* Align dot and text vertically */
+    gap: 8px; /* Space between dot and text */
+}
+
+.keyMap .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0;
+}
+
+.keyMap .fertile {
+    background-color: #00897B;
+}
+
+.keyMap .period {
+    background-color: #D32F2F;
+}
+
+.keyMap .symptomsCell {
+    background-color: #7E57C2;
+}
+
+.symptoms-for-day{
+    padding: 10px;
+}
 
 #loading-spinner {
     position: fixed;
@@ -337,7 +509,7 @@ button{
     border-radius: 10px;
 }
 
-#flow {
+#flow, #feeling {
     width: 100%; /* Full width to fit the screen */
     padding: 12px; /* Add padding for better touch interaction */
     font-size: 16px; /* Increase font size for readability */
@@ -350,13 +522,13 @@ button{
     cursor: pointer; /* Show pointer cursor */
 }
 
-#flow:focus {
+#flow:focus, #feeling:focus {
     border-color: var(--accent-dark-color); /* Highlight border on focus */
     outline: none; /* Remove default outline */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow */
 }
 
-#flow:hover {
+#flow:hover, #feeling:hover {
     background-color: #e9ecef; /* Change background on hover */
 }
 
@@ -397,7 +569,14 @@ label[for="flow"] {
     color: #555;
 }
 
-#flow {
+label[for="feeling"] {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+#flow, #feeling {
     width: 100%;
     padding: 10px;
     font-size: 14px;
@@ -556,9 +735,6 @@ input[type=radio]:checked + label:after {
 
 #app {
     margin: 0 auto;
-    /* background: #fff; */
-    /* border-radius: 10px; */
-    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
     overflow: hidden;
 }
 

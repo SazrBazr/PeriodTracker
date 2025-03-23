@@ -1,11 +1,10 @@
 // main.js
 import { auth } from './firebaseConfig.js';
 import { login, signup, logout, onAuthChanged, checkEmailExists } from './auth.js';
-import { getUserData, setUserData, checkSymptomsForDate, addCycleData, addSymptomData, getCycleHistory, getCycleHistoryWithId, getUserIdByEmail, sendInvitation, updateUserPartner, getSymptomsHistory } from './firestore.js';
+import { getUserData, setUserData, checkSymptomsForDate, getSymptomsForDate, addCycleData, addSymptomData, getCycleHistory, getCycleHistoryWithId, getUserIdByEmail, sendInvitation, updateUserPartner, getSymptomsHistory } from './firestore.js';
 import { showDashboard, showAuth, renderCycleHistory, updateUi} from './ui.js';
 import { predictNextPeriod, calculateAveragePeriodLength, calculateOvulationWindow } from './utils.js';
 import { updateDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
-import { generateKey, encryptData, decryptData, encryptKey, decryptKey, addEncCycleData, getEncCycleHistory, exportKey, importKey } from './encryption.js';
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const endPeriodBtn = document.getElementById('end-period-btn');
     const symptomsModal = document.getElementById('symptoms-modal');
     const saveSymptomsBtn = document.getElementById('save-day-btn');
-    const closeModalBtn = document.getElementById('close-modal-btn');
     const showSignup = document.getElementById('show-signup');
     const showLogin = document.getElementById('show-login');
     const infoIcons = document.querySelectorAll('.info');
@@ -141,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nextMonthBtn.onclick = () => renderCalendar(currentYear, currentMonth + 1);
     
         const monthYear = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(firstDay);
-        const monthYearSpan = document.createElement('span');
+        const monthYearSpan = document.createElement('h2');
         monthYearSpan.textContent = monthYear;
     
         header.appendChild(prevMonthBtn);
@@ -265,17 +263,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to show day details
     async function showDayDetails(year, month, day) {
         const user = auth.currentUser;
-        if(!user) return;
+        if (!user) return;
+
+        const clickedDate = new Date(year, month, day + 1).toISOString().split('T')[0];
+        // Fetch symptoms for the selected date
+        const querySnapshot = await getSymptomsForDate(user.uid, clickedDate);
+
+        if (!querySnapshot.empty) {
+            // Assuming each document contains symptoms as an array
+            const symptomsData = querySnapshot.docs.map(doc => doc.data());
+            const symptomsList = symptomsData.flatMap(entry => entry.symptoms).join(', ');
+    
+            document.getElementById('daySymptoms').textContent = symptomsList;
+            document.getElementById('symptoms-for-day').style.display = 'block';
+        }
+        else{
+            document.getElementById('symptoms-for-day').style.display = 'none';
+        }
+    
         const userData = await getUserData(user.uid);
-        if(userData.gender === "Male") {
+        if (userData.gender === "Male") {
             document.getElementById('day-details').style.display = 'none';
             return;
         }
-        clickedDate = new Date(year, month, day + 1).toISOString().split('T')[0];
-        const selectedDate = new Date(year, month, day + 1).toISOString().split('T')[0];
-        document.getElementById('selected-date').textContent = selectedDate;
+    
+        document.getElementById('selected-date').textContent = clickedDate;
         document.getElementById('day-details').style.display = 'block';
-    }
+    }    
 
     // Toggle between login and signup forms
     showSignup.addEventListener('click', () => {
@@ -317,11 +331,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             alert(error.message);
         }
+        loginEmail.value='';
+        loginPassword.value='';
         updateUi();
         renderCalendar();
-        if (!encryptionKey) {
-            return encryptionKey;
-        }
     });
 
     signupBtn.addEventListener('click', async () => {
@@ -362,6 +375,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             alert(error.message);
         }
+        signupEmail.value='';
+        signupUsername.value='';
+        signupPassword.value='';
+        signupConfirmPassword.value='';
     });
 
     logoutBtn.addEventListener('click', async () => {
@@ -407,21 +424,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (latestCycle && latestCycle.endDate === null) {
             // User is ending the period    
             if (clickedDate) {
-
-                const encryptionKey = JSON.parse(localStorage.getItem('encryptionKey'));
-                if (!encryptionKey) {
-                    throw new Error("Encryption key not found.");
-                }
             
                 const data = {
                     endDate: clickedDate
                 }
 
-                const { iv, encryptedData } = await encryptData(data, encryptionKey);
-                await updateDoc(latestCycle.ref, {
-                    encryptedData: Array.from(encryptedData), // Convert to array for Firestore
-                    iv: Array.from(iv) // Store IV for decryption
-                });
+                await updateDoc(latestCycle.ref, data);
             }
         } else {
             alert("There is no active Period")
@@ -444,6 +452,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const symptoms = Array.from(document.querySelectorAll('input[name="symptoms"]:checked')).map(input => input.value);
         const flow = document.getElementById('flow').value;
+        const feeling = document.getElementById('feeling').value;
+
     
         if (!clickedDate || symptoms.length === 0 || !flow) {
             alert('Please fill in all fields.');
@@ -456,6 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 date: clickedDate,
                 symptoms: symptoms,
                 flow: flow,
+                feeling: feeling,
                 timestamp: new Date()
             });
             alert('Symptoms and flow logged!');
@@ -485,10 +496,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             alert('Please enter a valid email.');
         }
-    });
-
-    closeModalBtn.addEventListener('click', () => {
-        symptomsModal.style.display = 'none';
     });
 
     onAuthChanged(async (user) => {

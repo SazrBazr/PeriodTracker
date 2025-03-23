@@ -76,6 +76,22 @@ export async function checkSymptomsForDate(uid, date) {
     return !querySnapshot.empty;
 }
 
+export async function getSymptomsForDate(uid, date) {
+    // Format the date to a comparable string (e.g., 'YYYY-MM-DD')
+    const formattedDate = new Date(date).toISOString().split('T')[0];
+
+    // Query the symptoms collection for the given user and date
+    const symptomsQuery = query(
+        collection(db, 'users', uid, 'symptoms'),
+        where('date', '==', formattedDate)  // Check for exact match with the given date
+    );
+
+    const querySnapshot = await getDocs(symptomsQuery);
+
+    // If there are any documents matching the date, return true
+    return querySnapshot;
+}
+
 export async function getUserIdByEmail(email) {
     const usersQuery = query(collection(db, 'users'), where('email', '==', email));
     const querySnapshot = await getDocs(usersQuery);

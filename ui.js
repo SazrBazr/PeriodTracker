@@ -29,8 +29,8 @@ export function renderCycleHistory(cycles) {
             return;
         }
         const li = document.createElement('li');
-        const startString = new Date(cycle.startDate).toISOString().split('T')[0]
-        const endString = new Date(cycle.endDate).toISOString().split('T')[0]
+        const startString = cycle.startDate;
+        const endString = cycle.endDate === null? "active" : cycle.endDate;
         li.innerHTML = `
             <strong>Start:</strong> ${startString},<br> <strong>End:</strong> ${endString}<br>
         `;
@@ -67,6 +67,7 @@ export async function updateUi() {
     document.getElementById('username').textContent = userData.username || 'User';
 
     const invitations = await getPendingInvitations(user.uid);
+    document.getElementById('invitations-section').style.display = 'none';
     let symptoms;
     if(userData.gender === "Female"){
         symptoms = await getSymptomsHistory(user.uid);
@@ -88,6 +89,7 @@ export async function updateUi() {
     console.log("Cycles:", cycles); // Log cycles
 
     if (invitations.length > 0) {
+        document.getElementById('invitations-section').style.display = 'block';
         renderInvitations(invitations);
     }
     if (cycles.length > 0) { // Ensure cycles is not empty

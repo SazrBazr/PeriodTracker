@@ -27,11 +27,11 @@
     const data = getFromStorage('testKey');
     console.log('Retrieved data:', data);
   </script>
+
   <div id="app">
     <!-- Auth Container -->
     <div id="auth-container">
       <h1>🌺 Period Tracker</h1>
-
       <!-- Login Form -->
       <div id="login-form">
         <h2>Login</h2>
@@ -137,7 +137,7 @@
           </div>
 
           <!-- Shared content for both genders -->
-          <section id="invitations-section" class="sharing">
+          <section id="invitations-section" class="sharing" style="display: none;">
             <h3>Invitations</h3>
             <ul id="invitations-list">There is no invitations waiting for you</ul>
           </section>
@@ -154,136 +154,140 @@
           </section>
         </div>
         <div id="tracking-tab" class="tab-content">
-          <h3>Tracking</h3>
+          <h3>Calendar</h3>
+          <div class="keyMap">
+            <div class="keyItem">
+                <div class="dot fertile"></div>
+                <span>Fertile Days</span>
+            </div>
+            <div class="keyItem">
+                <div class="dot symptomsCell"></div>
+                <span>Days You Had Symptoms</span>
+            </div>
+            <div class="keyItem">
+                <div class="dot period"></div>
+                <span>Next Predicted Period Days</span>
+            </div>
+          </div>  
+          <br>      
+          <div></div>
+          <div></div>
           <div id="calendar-container">
               <div id="calendar">
                   <div class="calendar-header">
                       <button id="prev-month">&lt;</button>
-                      <h4 id="current-month">Month Year</h4>
+                      <h1 id="current-month">Month Year</h1>
                       <button id="next-month">&gt;</button>
                   </div>
                   <div id="calendar-grid"></div>
               </div>
           </div>
+          <h4 id="selected-date">Selected Date</h4>
+          <div id="symptoms-for-day" style="display: none;">
+            <div id="daySymptoms">
+            </div>
+          </div>
           <div class="female-only" id="day-details" style="display: none;">
-              <h4 id="selected-date">Selected Date</h4>
-              <div class="symptoms">
-                <div class="checkbox-wrapper-47">
-                  <input id="ac" type="checkbox" name="symptoms" value="Abdominal Cramps" class="s-check-box">
-                  <label for="ac">Abdominal Cramps</label>
-                </div>
-                <div class="checkbox-wrapper-47">
-                  <input id="ms" type="checkbox" name="symptoms" value="Mood Swings" class="s-check-box">
-                  <label for="ms">Mood Swings</label>
-                </div>
-                <div class="checkbox-wrapper-47">
-                  <input id="ha" type="checkbox" name="symptoms" value="Headache" class="s-check-box">
-                  <label for="ha">Headache</label>
-                </div>
-                <div class="checkbox-wrapper-47">
-                  <input id="blo" type="checkbox" name="symptoms" value="Bloating" class="s-check-box">
-                  <label for="blo">Bloating</label>
-                </div>
-                <div class="checkbox-wrapper-47">
-                  <input id="ap-ch" type="checkbox" name="symptoms" value="Appetite Changes" class="s-check-box">
-                  <label for="ap-ch">Appetite Changes</label>
-                </div>
-                <div class="checkbox-wrapper-47">
-                  <input id="fati" type="checkbox" name="symptoms" value="Fatigue" class="s-check-box">
-                  <label for="fati">Fatigue</label>
-                </div>
-                <div class="checkbox-wrapper-47">
-                  <input id="bi" type="checkbox" name="symptoms" value="Bladder Incontinence" class="s-check-box">
-                  <label for="bi">Bladder Incontinence</label>
-                </div>
-                <div class="checkbox-wrapper-47">
-                  <input id="acne" type="checkbox" name="symptoms" value="Acne" class="s-check-box">
-                  <label for="acne">Acne</label>
-                </div>
-                <div class="checkbox-wrapper-47">
-                  <input id="bp" type="checkbox" name="symptoms" value="Breast Pain" class="s-check-box">
-                  <label for="bp">Breast Pain</label>
-                </div>
-                <div class="checkbox-wrapper-47">
-                  <input id="chi" type="checkbox" name="symptoms" value="Chills" class="s-check-box">
-                  <label for="chi">Chills</label>
-                </div>
+            <h3>Symptoms:</h3>
+            <div class="symptoms">
+              <div class="checkbox-wrapper-47">
+                <input id="ac" type="checkbox" name="symptoms" value="Abdominal Cramps" class="s-check-box">
+                <label for="ac">Abdominal Cramps</label>
               </div>
-              <label for="flow">Flow</label>
-              <select id="flow">
-                  <option class="options" value="No Flow">No Flow</option>
-                  <option class="options" value="Light">Light</option>
-                  <option class="options" value="Medium">Medium</option>
-                  <option class="options" value="Heavy">Heavy</option>
-              </select>
-              <button id="save-day-btn">Save Symptoms</button>
-              <div class="btn-container">
-                <button id="start-period-btn">Start Period</button>
-                <button id="end-period-btn">End Period</button>
+              <div class="checkbox-wrapper-47">
+                <input id="ms" type="checkbox" name="symptoms" value="Mood Swings" class="s-check-box">
+                <label for="ms">Mood Swings</label>
               </div>
+              <div class="checkbox-wrapper-47">
+                <input id="ha" type="checkbox" name="symptoms" value="Headache" class="s-check-box">
+                <label for="ha">Headache</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="blo" type="checkbox" name="symptoms" value="Bloating" class="s-check-box">
+                <label for="blo">Bloating</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="ap-ch" type="checkbox" name="symptoms" value="Appetite Changes" class="s-check-box">
+                <label for="ap-ch">Appetite Changes</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="fati" type="checkbox" name="symptoms" value="Fatigue" class="s-check-box">
+                <label for="fati">Fatigue</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="bi" type="checkbox" name="symptoms" value="Bladder Incontinence" class="s-check-box">
+                <label for="bi">Bladder Incontinence</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="acne" type="checkbox" name="symptoms" value="Acne" class="s-check-box">
+                <label for="acne">Acne</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="bp" type="checkbox" name="symptoms" value="Breast Pain" class="s-check-box">
+                <label for="bp">Breast Pain</label>
+              </div>
+              <div class="checkbox-wrapper-47">
+                <input id="chi" type="checkbox" name="symptoms" value="Chills" class="s-check-box">
+                <label for="chi">Chills</label>
+              </div>
+            </div>
 
+            <label for="feeling">Feeling</label>
+            <select id="feeling">
+                <option class="options" value="Calm">Calm</option>
+                <option class="options" value="Exhausted ">Exhausted</option>
+                <option class="options" value="Anxious">Anxious</option>
+                <option class="options" value="Emotional">Emotional</option>
+                <option class="options" value="Sensitive">Sensitive</option>
+                <option class="options" value="Irritated">Irritated </option>
+            </select>
+
+            <label for="flow">Flow</label>
+            <select id="flow">
+                <option class="options" value="No Flow">No Flow</option>
+                <option class="options" value="Spotting">Spotting</option>
+                <option class="options" value="Light">Light</option>
+                <option class="options" value="Medium">Medium</option>
+                <option class="options" value="Heavy">Heavy</option>
+            </select>
+            <button id="save-day-btn">Save Status</button>
+            <div class="btn-container">
+              <button id="start-period-btn">Start Period</button>
+              <button id="end-period-btn">End Period</button>
+            </div>
           </div>
         </div>
         <div id="stats-tab" class="tab-content">
           <h3>Stats</h3>
           <div class="stats-grid">
-              <div class="stat">
-                <div class="info-card">This is the average length of your menstrual cycle.</div>
-                <i class="fas fa-info-circle info fa-xl"></i>
-                <h2>Average Cycle Length</h2>
-                <p id="avg-cycle-length-stat">No data</p>
-              </div>
-              <div class="stat">
-                <div class="info-card">This is the average duration of your period.</div>
-                <i class="fas fa-info-circle info fa-xl"></i>
-                <h2>Average Period Length</h2>
-                <p id="avg-period-length-stat">No data</p>
-              </div>
-              <div class="stat">
-                <div class="info-card">This is the window when ovulation is likely to occur.</div>
-                <i class="fas fa-info-circle info fa-xl"></i>
-                <h2>Ovulation Window</h2>
-                <p id="ovulation-window-stat">No data</p>
-              </div>
-              <div class="stat">
-                <div class="info-card">These are the days when you are most fertile.</div>
-                <i class="fas fa-info-circle info fa-xl"></i>
-                <h2>Fertile Days</h2>
-                <p id="fertile-days-stat">No data</p>
-              </div>
+            <div class="stat">
+              <div class="info-card">This is the average length of your menstrual cycle.</div>
+              <i class="fas fa-info-circle info fa-xl"></i>
+              <h2>Average Cycle Length</h2>
+              <p id="avg-cycle-length-stat">No data</p>
+            </div>
+            <div class="stat">
+              <div class="info-card">This is the average duration of your period.</div>
+              <i class="fas fa-info-circle info fa-xl"></i>
+              <h2>Average Period Length</h2>
+              <p id="avg-period-length-stat">No data</p>
+            </div>
+            <div class="stat">
+              <div class="info-card">This is the window when ovulation is likely to occur.</div>
+              <i class="fas fa-info-circle info fa-xl"></i>
+              <h2>Ovulation Window</h2>
+              <p id="ovulation-window-stat">No data</p>
+            </div>
+            <div class="stat">
+              <div class="info-card">These are the days when you are most fertile.</div>
+              <i class="fas fa-info-circle info fa-xl"></i>
+              <h2>Fertile Days</h2>
+              <p id="fertile-days-stat">No data</p>
+            </div>
           </div>
         </div>
-        </div>
-
-        <!-- Modal for logging symptoms and flow -->
-        <div id="symptoms-modal" style="display: none;">
-        <h3>Log Symptoms & Flow</h3>
-        <label for="symptoms-date">Date</label>
-        <input type="date" id="symptoms-date">
-        <div class="symptoms">
-          <label><input type="checkbox" name="symptoms" value="cramps"> Cramps</label>
-          <label><input type="checkbox" name="symptoms" value="headache"> Headache</label>
-          <label><input type="checkbox" name="symptoms" value="mood-swings"> Mood Swings</label>
-          <label><input type="checkbox" name="symptoms" value="bloating"> Bloating</label>
-          <label><input type="checkbox" name="symptoms" value="fatigue"> Fatigue</label>
-        </div>
-        <label for="flow">Flow</label>
-        <select id="flow">
-          <option value="light">Light</option>
-          <option value="medium">Medium</option>
-          <option value="heavy">Heavy</option>
-        </select>
-        <button id="save-symptoms-btn">Save</button>
-        <button id="close-modal-btn">Close</button>
-        </div>
-        </div>
       </div>
-
-      
-
-  <div id="loading-spinner" style="display: none;">
-    <div class="spinner"></div>
-    <p>Loading...</p>
+    </div>
   </div>
   <script type="module" src="main.js"></script>
   <script>
