@@ -1,11 +1,10 @@
 // main.js
-import { auth } from './firebaseConfig.js';
+import { auth, db } from './firebaseConfig.js';
 import { login, signup, logout, onAuthChanged, checkEmailExists } from './auth.js';
 import { getUserData, setUserData, checkSymptomsForDate, getSymptomsForDate, addCycleData, addSymptomData, getCycleHistory, getCycleHistoryWithId, getUserIdByEmail, sendInvitation, updateUserPartner, getSymptomsHistory } from './firestore.js';
 import { showDashboard, showAuth, renderCycleHistory, updateUi} from './ui.js';
 import { predictNextPeriod, calculateAveragePeriodLength, calculateOvulationWindow } from './utils.js';
-import { updateDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
-
+import { updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
@@ -265,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = auth.currentUser;
         if (!user) return;
 
-        const clickedDate = new Date(year, month, day + 1).toISOString().split('T')[0];
+        clickedDate = new Date(year, month, day + 1).toISOString().split('T')[0];
         // Fetch symptoms for the selected date
         const querySnapshot = await getSymptomsForDate(user.uid, clickedDate);
 
@@ -422,21 +421,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const latestCycle = cycles.length > 0 ? cycles[0] : null;
     
         if (latestCycle && latestCycle.endDate === null) {
-            // User is ending the period    
             if (clickedDate) {
-            
-                const data = {
-                    endDate: clickedDate
+                try {
+                    if (!latestCycle.ref) {
+                        console.error("Error: latestCycle.ref is undefined");
+                        return;
+                    }
+    
+                    await updateDoc(latestCycle.ref, { endDate: clickedDate });
+    
+                    console.log("Cycle updated successfully:", { endDate: clickedDate });
+                } catch (error) {
+                    console.error("Error updating Firestore document:", error);
                 }
-
-                await updateDoc(latestCycle.ref, data);
             }
         } else {
-            alert("There is no active Period")
+            alert("There is no active Period");
         }
-
+    
         renderCycleHistory(await getCycleHistory(user.uid)); // Refresh history
-    });
+    });    
 
     saveSymptomsBtn.addEventListener('click', async () => {
         const user = auth.currentUser;

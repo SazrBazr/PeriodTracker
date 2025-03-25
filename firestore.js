@@ -22,7 +22,7 @@ export async function setUserData(uid, data) {
 }
 
 export async function updateUserData(uid, data){
-    const userRef = doc(firestore, 'users', userId);
+    const userRef = doc(firestore, 'users', uid);
     await updateDoc(userRef, data);
 }
 
@@ -39,14 +39,22 @@ export async function getCycleHistory(uid) {
         console.error("UID is undefined.");
         return [];
     }
-    const cyclesQuery = query(collection(db, 'users', uid, 'cycles'), orderBy('startDate', 'desc'));
+
+    const cyclesQuery = query(
+        collection(db, 'users', uid, 'cycles'),
+        orderBy('startDate', 'desc')
+    );
+
     const querySnapshot = await getDocs(cyclesQuery);
     console.log("Fetched cycles:", querySnapshot.docs.map(doc => doc.data())); // Log fetched data
+
     return querySnapshot.docs.map(doc => ({
         ...doc.data(),
+        id: doc.id,  // Add document ID
         ref: doc.ref // Save reference to update document later
     }));
 }
+
 
 export async function getCycleHistoryWithId(uid) {
     const cyclesQuery = query(collection(db, 'users', uid, 'cycles'), orderBy('startDate', 'desc'));
